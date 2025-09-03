@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API чат</title>
+    <title>Оюунсана чат - Зураг дэмжлэгтэй</title>
     <style>
         * {
             margin: 0;
@@ -15,60 +15,78 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
+            overflow: hidden;
+        }
+
+        .split-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 100vh;
+        }
+
+        .code-panel {
+            flex: 1;
+            background: #1a1a1a;
+            color: #e0e0e0;
             padding: 20px;
+            overflow-y: auto;
+            border-right: 2px solid #333;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-container {
             width: 100%;
-            max-width: 500px;
-            height: 80vh;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 100%;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         .chat-header {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             padding: 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
             border-radius: 50%;
             margin: 0 auto 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
         }
 
         .chat-title {
             color: white;
             font-size: 20px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 5px;
         }
 
-        .api-status {
-            color: rgba(255, 255, 255, 0.7);
+        .chat-subtitle {
+            color: rgba(255, 255, 255, 0.8);
             font-size: 12px;
-            padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            display: inline-block;
         }
 
         .messages {
@@ -81,12 +99,14 @@
         }
 
         .message {
-            max-width: 80%;
-            padding: 12px 16px;
+            max-width: 85%;
+            padding: 15px 18px;
             border-radius: 18px;
             color: white;
-            line-height: 1.4;
+            line-height: 1.5;
             animation: slideIn 0.3s ease;
+            word-wrap: break-word;
+            font-size: 14px;
         }
 
         @keyframes slideIn {
@@ -102,41 +122,55 @@
 
         .message-user {
             align-self: flex-end;
-            background: rgba(255, 255, 255, 0.25);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.25));
             border-bottom-right-radius: 6px;
         }
 
         .message-bot {
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             border-bottom-left-radius: 6px;
         }
 
         .message-header {
             font-size: 11px;
             opacity: 0.7;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
         .message-time {
-            font-size: 9px;
+            font-size: 10px;
             opacity: 0.5;
             text-align: right;
-            margin-top: 4px;
+            margin-top: 6px;
+        }
+
+        .message-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .message-image:hover {
+            transform: scale(1.02);
         }
 
         .typing-indicator {
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 15px 18px;
             border-radius: 18px;
             border-bottom-left-radius: 6px;
         }
 
         .typing-dots {
             display: flex;
-            gap: 4px;
+            gap: 6px;
+            align-items: center;
         }
 
         .typing-dots span {
@@ -162,83 +196,74 @@
         }
 
         .input-area {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .api-setup {
-            margin-bottom: 15px;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .api-setup label {
-            display: block;
+        .quick-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
             color: white;
-            font-size: 12px;
-            margin-bottom: 8px;
-            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .api-setup select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        .api-setup select option {
-            background: #333;
-            color: white;
-        }
-
-        .api-setup input[type="password"] {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 14px;
-        }
-
-        .api-setup input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .input-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: flex-end;
         }
 
-        .chat-input {
+        .input-wrapper {
             flex: 1;
-            padding: 12px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 12px 50px 12px 15px;
+            border: none;
+            border-radius: 20px;
+            background: transparent;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             outline: none;
             resize: none;
-            min-height: 24px;
+            min-height: 20px;
             max-height: 100px;
+            font-family: inherit;
         }
 
         .chat-input::placeholder {
             color: rgba(255, 255, 255, 0.6);
         }
 
-        .send-button {
-            width: 45px;
-            height: 45px;
+        .image-upload-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
             border: none;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.2);
@@ -247,12 +272,35 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .image-upload-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .image-input {
+            display: none;
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.25));
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
             transition: all 0.2s ease;
         }
 
         .send-button:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.35));
             transform: scale(1.05);
         }
 
@@ -261,408 +309,494 @@
             cursor: not-allowed;
         }
 
-        .error-message {
-            background: rgba(255, 107, 107, 0.2);
-            border: 1px solid rgba(255, 107, 107, 0.4);
-            color: #ff6b6b;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 12px;
+        .image-preview {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .success-message {
-            background: rgba(81, 207, 102, 0.2);
-            border: 1px solid rgba(81, 207, 102, 0.4);
-            color: #51cf66;
-            padding: 10px;
+        .preview-item {
+            position: relative;
             border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        @media (max-width: 600px) {
-            .chat-container {
-                height: 100vh;
-                border-radius: 0;
+        .preview-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Code panel styling */
+        .code-header {
+            color: #61dafb;
+            font-size: 16px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .code-section {
+            margin-bottom: 20px;
+        }
+
+        .code-title {
+            color: #f92672;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #61dafb;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+
+        .keyword { color: #f92672; }
+        .string { color: #a6e22e; }
+        .comment { color: #75715e; font-style: italic; }
+        .function { color: #66d9ef; }
+        .number { color: #ae81ff; }
+
+        /* Image modal */
+        .image-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            cursor: pointer;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .split-container {
+                flex-direction: column;
             }
             
-            body {
-                padding: 0;
+            .code-panel {
+                max-height: 40vh;
+                order: 2;
+                border-right: none;
+                border-top: 2px solid #333;
             }
+            
+            .chat-panel {
+                order: 1;
+                min-height: 60vh;
+            }
+        }
+
+        /* Custom scrollbar */
+        .messages::-webkit-scrollbar,
+        .code-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-track,
+        .code-panel::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .code-panel::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="logo">🤖</div>
-            <div class="chat-title">AI чат</div>
-            <div class="api-status" id="apiStatus">API тохиргоогүй</div>
-        </div>
+    <div class="split-container">
+        <!-- Code Panel -->
+        <div class="code-panel">
+            <div class="code-header">📝 Чатын код - Live Preview</div>
+            
+            <div class="code-section">
+                <div class="code-title">HTML Бүтэц</div>
+                <div class="code-block" data-lang="HTML">
+<span class="comment">&lt;!-- Үндсэн чатын HTML бүтэц --&gt;</span>
+<span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"split-container"</span><span class="keyword">&gt;</span>
+  <span class="comment">&lt;!-- Кодын талбар --&gt;</span>
+  <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"code-panel"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"code-header"</span><span class="keyword">&gt;</span>Live код<span class="keyword">&lt;/div&gt;</span>
+  <span class="keyword">&lt;/div&gt;</span>
+  
+  <span class="comment">&lt;!-- Чатын талбар --&gt;</span>
+  <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"chat-panel"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"chat-container"</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"messages"</span><span class="keyword">&gt;&lt;/div&gt;</span>
+      <span class="keyword">&lt;div</span> <span class="property">class=</span><span class="string">"input-area"</span><span class="keyword">&gt;&lt;/div&gt;</span>
+    <span class="keyword">&lt;/div&gt;</span>
+  <span class="keyword">&lt;/div&gt;</span>
+<span class="keyword">&lt;/div&gt;</span>
+                </div>
+            </div>
 
-        <div class="messages" id="messages">
-            <div class="message message-bot">
-                <div class="message-header">AI туслах</div>
-                <div>Сайн байна уу! Доорх тохиргоогоор API key оруулаад чатлаж эхлээрэй! 🚀</div>
-                <div class="message-time" id="welcomeTime"></div>
+            <div class="code-section">
+                <div class="code-title">CSS Glass Эффект</div>
+                <div class="code-block" data-lang="CSS">
+<span class="comment">/* Тунгалаг glass morphism дизайн */</span>
+<span class="function">.chat-container</span> {
+  <span class="property">background:</span> <span class="function">rgba</span>(<span class="number">255, 255, 255, 0.12</span>);
+  <span class="property">backdrop-filter:</span> <span class="function">blur</span>(<span class="number">25px</span>);
+  <span class="property">border:</span> <span class="number">1px</span> <span class="keyword">solid</span> <span class="function">rgba</span>(<span class="number">255, 255, 255, 0.25</span>);
+  <span class="property">border-radius:</span> <span class="number">25px</span>;
+  <span class="property">box-shadow:</span> <span class="number">0 25px 50px</span> <span class="function">rgba</span>(<span class="number">0, 0, 0, 0.15</span>);
+}
+
+<span class="function">.message</span> {
+  <span class="property">background:</span> <span class="function">rgba</span>(<span class="number">255, 255, 255, 0.18</span>);
+  <span class="property">backdrop-filter:</span> <span class="function">blur</span>(<span class="number">10px</span>);
+  <span class="property">border-radius:</span> <span class="number">18px</span>;
+  <span class="property">animation:</span> slideIn <span class="number">0.3s</span> ease;
+  <span class="property">transition:</span> <span class="keyword">all</span> <span class="number">0.3s</span> ease;
+}
+
+<span class="comment">/* Хэрэглэгчийн мессеж */</span>
+<span class="function">.message-user</span> {
+  <span class="property">background:</span> <span class="function">linear-gradient</span>(<span class="number">135deg</span>, 
+    <span class="function">rgba</span>(<span class="number">255, 255, 255, 0.35</span>), 
+    <span class="function">rgba</span>(<span class="number">255, 255, 255, 0.25</span>));
+  <span class="property">align-self:</span> flex-end;
+}
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-title">JavaScript Мессеж Функц</div>
+                <div class="code-block" data-lang="JS">
+<span class="comment">// Мессеж нэмэх үндсэн функц</span>
+<span class="keyword">function</span> <span class="function">addMessage</span>(content, isUser = <span class="keyword">false</span>, images = []) {
+  <span class="keyword">const</span> messageDiv = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+  messageDiv.<span class="property">className</span> = <span class="string">`message ${isUser ? 'message-user' : 'message-bot'}`</span>;
+  
+  <span class="comment">// Зураг HTML үүсгэх</span>
+  <span class="keyword">let</span> imageHtml = <span class="string">''</span>;
+  <span class="keyword">if</span> (images && images.<span class="property">length</span> > <span class="number">0</span>) {
+    imageHtml = images.<span class="function">map</span>(img => 
+      <span class="string">`&lt;img src="${img}" class="message-image" 
+            onclick="showImageModal('${img}')"&gt;`</span>
+    ).<span class="function">join</span>(<span class="string">''</span>);
+  }
+  
+  <span class="comment">// Мессежийн агуулга</span>
+  messageDiv.<span class="property">innerHTML</span> = <span class="string">`
+    &lt;div class="message-header"&gt;${isUser ? 'Та' : 'AI туслах'}&lt;/div&gt;
+    &lt;div&gt;${content}&lt;/div&gt;
+    ${imageHtml}
+    &lt;div class="message-time"&gt;${getCurrentTime()}&lt;/div&gt;
+  `</span>;
+  
+  messagesContainer.<span class="function">appendChild</span>(messageDiv);
+  <span class="function">scrollToBottom</span>();
+}
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-title">Зураг Upload Системы</div>
+                <div class="code-block" data-lang="JS">
+<span class="comment">// Зураг оруулах handler</span>
+<span class="keyword">function</span> <span class="function">handleImageUpload</span>(input) {
+  <span class="keyword">const</span> files = Array.<span class="function">from</span>(input.<span class="property">files</span>);
+  
+  files.<span class="function">forEach</span>(file => {
+    <span class="comment">// Файлын хэмжээ шалгах (5MB хязгаар)</span>
+    <span class="keyword">if</span> (file.<span class="property">size</span> > <span class="number">5</span> * <span class="number">1024</span> * <span class="number">1024</span>) {
+      <span class="function">showError</span>(<span class="string">'Зургийн хэмжээ 5MB-аас бага байх ёстой!'</span>);
+      <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// FileReader ашиглан зураг унших</span>
+    <span class="keyword">const</span> reader = <span class="keyword">new</span> <span class="function">FileReader</span>();
+    reader.<span class="property">onload</span> = <span class="keyword">function</span>(e) {
+      selectedImages.<span class="function">push</span>(e.<span class="property">target</span>.<span class="property">result</span>);
+      <span class="function">updateImagePreview</span>();
+    };
+    reader.<span class="function">readAsDataURL</span>(file);
+  });
+}
+
+<span class="comment">// Drag & Drop дэмжлэг</span>
+<span class="keyword">function</span> <span class="function">setupDragAndDrop</span>() {
+  <span class="keyword">const</span> container = document.<span class="function">querySelector</span>(<span class="string">'.chat-container'</span>);
+  
+  container.<span class="function">addEventListener</span>(<span class="string">'drop'</span>, <span class="keyword">function</span>(e) {
+    e.<span class="function">preventDefault</span>();
+    <span class="keyword">const</span> files = Array.<span class="function">from</span>(e.<span class="property">dataTransfer</span>.<span class="property">files</span>)
+      .<span class="function">filter</span>(file => file.<span class="property">type</span>.<span class="function">startsWith</span>(<span class="string">'image/'</span>));
+    
+    files.<span class="function">forEach</span>(file => {
+      <span class="comment">// Зураг боловсруулах...</span>
+    });
+  });
+}
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-title">AI Хариу Системы</div>
+                <div class="code-block" data-lang="JS">
+<span class="comment">// Хариу үүсгэх алгоритм</span>
+<span class="keyword">function</span> <span class="function">generateResponse</span>(message) {
+  <span class="keyword">const</span> lowerMessage = message.<span class="function">toLowerCase</span>();
+  
+  <span class="comment">// Түлхүүр үг таних</span>
+  <span class="keyword">if</span> (lowerMessage.<span class="function">includes</span>(<span class="string">'aoi'</span>)) {
+    <span class="keyword">return</span> <span class="function">getRandomResponse</span>(responses.<span class="property">aoi</span>);
+  } <span class="keyword">else if</span> (lowerMessage.<span class="function">includes</span>(<span class="string">'сайн'</span>)) {
+    <span class="keyword">return</span> <span class="function">getRandomResponse</span>(responses.<span class="property">greetings</span>);
+  } <span class="keyword">else if</span> (lowerMessage.<span class="function">includes</span>(<span class="string">'шог'</span>)) {
+    <span class="keyword">return</span> <span class="function">getRandomResponse</span>(responses.<span class="property">jokes</span>);
+  } <span class="keyword">else if</span> (lowerMessage.<span class="function">includes</span>(<span class="string">'код'</span>)) {
+    <span class="keyword">return</span> <span class="function">getRandomResponse</span>(responses.<span class="property">code</span>);
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="function">getRandomResponse</span>(responses.<span class="property">default</span>);
+  }
+}
+
+<span class="comment">// Санамсаргүй хариу сонгох</span>
+<span class="keyword">function</span> <span class="function">getRandomResponse</span>(responses) {
+  <span class="keyword">return</span> responses[Math.<span class="function">floor</span>(Math.<span class="function">random</span>() * responses.<span class="property">length</span>)];
+}
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-title">Чатын Онцлогууд</div>
+                <div class="feature-list">
+                    <div class="feature-item">✨ Glass morphism дизайн</div>
+                    <div class="feature-item">📸 Зураг дэмжлэг (drag & drop)</div>
+                    <div class="feature-item">🎌 Япон хэл дэмжлэг (aoi тайлбар)</div>
+                    <div class="feature-item">😂 Шог хэлэх функц</div>
+                    <div class="feature-item">⚡ Хурдан хариулт системы</div>
+                    <div class="feature-item">📱 Mobile responsive дизайн</div>
+                    <div class="feature-item">🎨 CSS анимаци эффектүүд</div>
+                    <div class="feature-item">💬 Typing индикатор</div>
+                    <div class="feature-item">🔄 Real-time код харах</div>
+                    <div class="feature-item">🖼️ Зургийн modal preview</div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-title">Техникийн Stack</div>
+                <div class="code-block" data-lang="INFO">
+<span class="comment">// Хэрэглэсэн технологи</span>
+<span class="keyword">Frontend:</span>
+  • <span class="string">HTML5</span> - Semantic markup
+  • <span class="string">CSS3</span> - Glass morphism, Flexbox
+  • <span class="string">JavaScript ES6+</span> - Modern syntax
+  
+<span class="keyword">Дизайн:</span>
+  • <span class="string">Glass morphism</span> - Backdrop-filter
+  • <span class="string">Gradient backgrounds</span> - Linear градиент  
+  • <span class="string">CSS animations</span> - Keyframes
+  • <span class="string">Responsive design</span> - Mobile first
+
+<span class="keyword">Функцууд:</span>
+  • <span class="string">File upload</span> - FileReader API
+  • <span class="string">Drag & drop</span> - HTML5 DnD API
+  • <span class="string">Image preview</span> - Modal системы
+  • <span class="string">Auto-resize textarea</span> - Dynamic height
+                </div>
             </div>
         </div>
 
-        <div class="input-area">
-            <div class="api-setup">
-                <label>🔑 AI сонголт:</label>
-                <select id="apiProvider">
-                    <option value="">API сонгоно уу...</option>
-                    <option value="openai">OpenAI (ChatGPT)</option>
-                    <option value="claude">Claude AI</option>
-                    <option value="gemini">Google Gemini</option>
-                </select>
-                
-                <label>API Key:</label>
-                <input type="password" id="apiKey" placeholder="API key-гээ оруулна уу...">
-                
-                <div id="statusMessage"></div>
-            </div>
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="logo" onclick="showEasterEgg()">🎮</div>
+                    <div class="chat-title">Оюунсана чат</div>
+                    <div class="chat-subtitle">Зураг дэмжлэгтэй • Live код харах</div>
+                </div>
 
-            <div class="input-row">
-                <textarea class="chat-input" id="messageInput" placeholder="Мессеж бичнэ үү..." rows="1"></textarea>
-                <button class="send-button" id="sendButton" onclick="sendMessage()">🚀</button>
+                <div class="messages" id="messages">
+                    <div class="message message-bot">
+                        <div class="message-header">AI туслах</div>
+                        <div>
+                            Сайн байна уу! 🎉 Энэ чат хажуу талын код дээр суурилаж ажиллаж байна!
+                            <br><br>✨ <strong>Онцлог:</strong>
+                            <br>💻 Кодыг хажуу талаас харж болно
+                            <br>📸 Зураг drag & drop дэмжлэг
+                            <br>🎌 Япон хэл (aoi гэх мэт)
+                            <br>⚡ Хурдан хариулт
+                        </div>
+                        <div class="message-time" id="welcomeTime"></div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="quick-buttons">
+                        <button class="quick-btn" onclick="sendQuickMessage('Сайн байна уу?')">👋 Сайн уу?</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Шог хэлээрэй')">😂 Шог</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('aoi')">🎌 aoi</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('Код харуулаарай')">💻 Код</button>
+                        <button class="quick-btn" onclick="clearChat()">🗑️ Цэвэрлэх</button>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-wrapper">
+                            <textarea class="chat-input" id="messageInput" 
+                                      placeholder="Мессеж бичнэ үү... (эсвэл зураг чирээд оруулна уу)" 
+                                      rows="1"></textarea>
+                            <button class="image-upload-btn" onclick="document.getElementById('imageInput').click()" title="Зураг нэмэх">
+                                📷
+                            </button>
+                            <input type="file" id="imageInput" class="image-input" 
+                                   accept="image/*" multiple onchange="handleImageUpload(this)">
+                        </div>
+                        <button class="send-button" id="sendButton" onclick="sendMessage()">🚀</button>
+                    </div>
+
+                    <div class="image-preview" id="imagePreview"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let currentApiProvider = '';
-        let currentApiKey = '';
-        let isProcessing = false;
+    <!-- Image modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <img class="modal-image" id="modalImage">
+    </div>
 
-        // DOM элементүүд
+    <script>
+        // Global variables
+        let selectedImages = [];
+        let isProcessing = false;
+        let messageCount = 1;
+
         const messagesContainer = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
-        const apiProviderSelect = document.getElementById('apiProvider');
-        const apiKeyInput = document.getElementById('apiKey');
-        const apiStatus = document.getElementById('apiStatus');
-        const statusMessage = document.getElementById('statusMessage');
+        const imagePreview = document.getElementById('imagePreview');
 
-        // Анхны тохиргоо
+        // Response data
+        const responses = {
+            greetings: [
+                'Сайн байна! 😊 Хажуу талын кодыг хараарай - энэ чатын бүх код харагдаж байна!',
+                'Маш сайн байна! 🌟 Кодын талбараас чатын ажиллагааг судалж болно!',
+                'Сайхан байна! 🎉 Live код харах боломжтой энэ чат!'
+            ],
+            aoi: [
+                'Aoi гэдэг нь япон хэл дээр "цэнхэр" гэсэн утгатай! 💙\n\nХажуу талын кодонд энэ функцийн implementation харагдаж байна!',
+                '🎌 Aoi (青) = цэнхэр өнгө\n\nКод дээр "aoi" keyword detect хийх алгоритм харагдаж байна!'
+            ],
+            jokes: [
+                'Программчийн шог:\n\n"Яагаад програмчид аргалж байдаг вэ?"\n"Бүх зүйлийг бинарээр харуулсан!" 😄\n\n💻 Хажуу талаас шогийн кодыг харж болно!',
+                'Кодын шог:\n\n```\nif (life.isHard()) {\n  drink.coffee();\n  code.more();\n}\n```\n☕ Програмчийн амьдрал!'
+            ],
+            code: [
+                '💻 Хажуу талын кодыг хараарай!\n\n🔍 Код дээр харж болох зүйлс:\n• HTML бүтэц\n• CSS glass эффект\n• JavaScript функцүүд\n• Зураг upload логик\n• Response generator',
+                '📝 Live код харах боломжтой!\n\nЗүүн талбараас чатын бүх кодыг судалж, өөрийн төсөлдөө ашиглаж болно! 🚀'
+            ],
+            default: [
+                'Сонирхолтой! 🤔 Хажуу талын код дээрээс миний хариуг үүсгэх процессыг харж болно!',
+                'Танай асуултыг хүлээн авлаа! 📨 Кодын талбараас response generator-ийн ажиллагааг хараарай!'
+            ]
+        };
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             updateWelcomeTime();
             setupEventListeners();
-            setupTextareaAutoResize();
+            messageInput.focus();
         });
 
-        // Event listeners
         function setupEventListeners() {
-            // API тохиргоо өөрчлөгдөхөд
-            apiProviderSelect.addEventListener('change', handleApiProviderChange);
-            apiKeyInput.addEventListener('input', handleApiKeyChange);
-            
-            // Enter товчоор мессеж илгээх
+            messageInput.addEventListener('input', autoResizeTextarea);
             messageInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-
-            // Textarea auto-resize
-            messageInput.addEventListener('input', autoResizeTextarea);
         }
 
-        // API provider өөрчлөгдөх
-        function handleApiProviderChange() {
-            currentApiProvider = apiProviderSelect.value;
-            updateApiStatus();
-            validateApiSetup();
-        }
-
-        // API key өөрчлөгдөх
-        function handleApiKeyChange() {
-            currentApiKey = apiKeyInput.value.trim();
-            updateApiStatus();
-            validateApiSetup();
-        }
-
-        // API статус шинэчлэх
-        function updateApiStatus() {
-            if (currentApiProvider && currentApiKey) {
-                apiStatus.textContent = `${getProviderName(currentApiProvider)} бэлэн`;
-                apiStatus.style.background = 'rgba(81, 207, 102, 0.2)';
-                apiStatus.style.color = '#51cf66';
-            } else {
-                apiStatus.textContent = 'API тохиргоогүй';
-                apiStatus.style.background = 'rgba(255, 255, 255, 0.1)';
-                apiStatus.style.color = 'rgba(255, 255, 255, 0.7)';
+        function updateWelcomeTime() {
+            const welcomeTime = document.getElementById('welcomeTime');
+            if (welcomeTime) {
+                welcomeTime.textContent = getCurrentTime();
             }
-        }
-
-        // Provider нэр авах
-        function getProviderName(provider) {
-            const names = {
-                'openai': 'OpenAI',
-                'claude': 'Claude',
-                'gemini': 'Gemini'
-            };
-            return names[provider] || provider;
-        }
-
-        // API тохиргоо шалгах
-        function validateApiSetup() {
-            if (!currentApiProvider) {
-                showStatusMessage('AI сонгоно уу', 'error');
-                return false;
-            }
-            
-            if (!currentApiKey) {
-                showStatusMessage('API key оруулна уу', 'error');
-                return false;
-            }
-
-            if (currentApiKey.length < 10) {
-                showStatusMessage('API key богино байна', 'error');
-                return false;
-            }
-
-            showStatusMessage('✅ Бэлэн байна!', 'success');
-            return true;
-        }
-
-        // Статус мессеж харуулах
-        function showStatusMessage(message, type) {
-            statusMessage.className = type === 'error' ? 'error-message' : 'success-message';
-            statusMessage.textContent = message;
-            
-            if (message === '✅ Бэлэн байна!') {
-                setTimeout(() => {
-                    statusMessage.textContent = '';
-                    statusMessage.className = '';
-                }, 2000);
-            }
-        }
-
-        // Textarea auto-resize
-        function setupTextareaAutoResize() {
-            messageInput.style.height = 'auto';
         }
 
         function autoResizeTextarea() {
             messageInput.style.height = 'auto';
-            messageInput.style.height = messageInput.scrollHeight + 'px';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
         }
 
-        // Цаг нэмэх
-        function updateWelcomeTime() {
-            const welcomeTime = document.getElementById('welcomeTime');
-            if (welcomeTime) {
-                welcomeTime.textContent = new Date().toLocaleTimeString('mn-MN', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            }
-        }
-
-        // Мессеж нэмэх
-        function addMessage(content, isUser = false, showTime = true) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'message-user' : 'message-bot'}`;
-            
-            const currentTime = new Date().toLocaleTimeString('mn-MN', {
+        function getCurrentTime() {
+            return new Date().toLocaleTimeString('mn-MN', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
+        }
+
+        function addMessage(content, isUser = false, images = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'message-user' : 'message-bot'}`;
+            
+            let imageHtml = '';
+            if (images && images.length > 0) {
+                imageHtml = images.map(img => 
+                    `<img src="${img}" class="message-image" onclick="showImageModal('${img}')" alt="Илгээсэн зураг">`
+                ).join('');
+            }
             
             messageDiv.innerHTML = `
                 <div class="message-header">${isUser ? 'Та' : 'AI туслах'}</div>
                 <div>${content}</div>
-                ${showTime ? `<div class="message-time">${currentTime}</div>` : ''}
+                ${imageHtml}
+                <div class="message-time">${getCurrentTime()}</div>
             `;
             
             messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            return messageDiv;
+            scrollToBottom();
+            messageCount++;
         }
 
-        // Typing индикатор
         function showTyping() {
             const typingDiv = document.createElement('div');
             typingDiv.className = 'typing-indicator';
             typingDiv.id = 'typingIndicator';
             typingDiv.innerHTML = `
-                <div class="typing-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(typingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            return typingDiv;
-        }
-
-        function hideTyping() {
-            const typingDiv = document.getElementById('typingIndicator');
-            if (typingDiv) {
-                typingDiv.remove();
-            }
-        }
-
-        // API дуудлага хийх
-        async function callAPI(message) {
-            let url, headers, body;
-            
-            switch(currentApiProvider) {
-                case 'openai':
-                    url = 'https://api.openai.com/v1/chat/completions';
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${currentApiKey}`
-                    };
-                    body = {
-                        model: 'gpt-3.5-turbo',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: 'Та бол найрсаг туслах. Монгол хэлээр хариулна уу.'
-                            },
-                            {
-                                role: 'user',
-                                content: message
-                            }
-                        ],
-                        max_tokens: 500,
-                        temperature: 0.7
-                    };
-                    break;
-                    
-                case 'claude':
-                    url = 'https://api.anthropic.com/v1/messages';
-                    headers = {
-                        'Content-Type': 'application/json',
-                        'x-api-key': currentApiKey,
-                        'anthropic-version': '2023-06-01'
-                    };
-                    body = {
-                        model: 'claude-3-haiku-20240307',
-                        max_tokens: 500,
-                        messages: [{
-                            role: 'user',
-                            content: `Монгол хэлээр хариулна уу: ${message}`
-                        }]
-                    };
-                    break;
-                    
-                case 'gemini':
-                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${currentApiKey}`;
-                    headers = {
-                        'Content-Type': 'application/json'
-                    };
-                    body = {
-                        contents: [{
-                            parts: [{
-                                text: `Монгол хэлээр хариулна уу: ${message}`
-                            }]
-                        }]
-                    };
-                    break;
-                    
-                default:
-                    throw new Error('API сонгогдоогүй байна');
-            }
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(body)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`API алдаа (${response.status}): ${errorText}`);
-            }
-
-            const data = await response.json();
-            
-            // Хариуг provider-ээр ялгаж авах
-            switch(currentApiProvider) {
-                case 'openai':
-                    return data.choices[0].message.content;
-                case 'claude':
-                    return data.content[0].text;
-                case 'gemini':
-                    return data.candidates[0].content.parts[0].text;
-                default:
-                    throw new Error('Хариу олдсонгүй');
-            }
-        }
-
-        // Мессеж илгээх
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            
-            if (!message || isProcessing) return;
-            
-            if (!validateApiSetup()) {
-                return;
-            }
-
-            // UI шинэчлэх
-            isProcessing = true;
-            sendButton.disabled = true;
-            
-            // Хэрэглэгчийн мессеж нэмэх
-            addMessage(message, true);
-            messageInput.value = '';
-            autoResizeTextarea();
-            
-            // Typing индикатор харуулах
-            const typingIndicator = showTyping();
-            
-            try {
-                // API дуудлага
-                const response = await callAPI(message);
-                
-                // Typing индикатор арилгах
-                hideTyping();
-                
-                // AI-ийн хариу нэмэх
-                addMessage(response);
-                
-            } catch (error) {
-                console.error('API алдаа:', error);
-                hideTyping();
-                
-                let errorMsg = 'API алдаа гарлаа. ';
-                
-                if (error.message.includes('401') || error.message.includes('403')) {
-                    errorMsg += 'API key буруу байна.';
-                } else if (error.message.includes('429')) {
-                    errorMsg += 'Хэтэрхий олон хүсэлт илгээсэн байна.';
-                } else if (error.message.includes('CORS')) {
-                    errorMsg += 'CORS алдаа. Браузерийн extension ашиглах хэрэгтэй.';
-                } else {
-                    errorMsg += error.message;
-                }
-                
-                addMessage(`❌ ${errorMsg}`);
-            }
-            
-            // UI буцаах
-            isProcessing = false;
-            sendButton.disabled = false;
-            messageInput.focus();
-        }
-
-        // Focus management
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.api-setup')) {
-                messageInput.focus();
-            }
-        });
-    </script>
-</body>
-</html>
+                <div
