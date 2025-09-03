@@ -497,38 +497,37 @@
             const randomEgg = easterEggs[Math.floor(Math.random() * easterEggs.length)];
             addMessage(randomEgg);
         }
-async function sendMessage() {
-  if (isProcessing) return;
-  const message = messageInput.value.trim();
-  if (!message) return;
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  isProcessing = true;
-  sendButton.disabled = true;
+  const { prompt } = req.body;
+  const apiKey = process.env.ANTHROPIC_API_KEY; // Vercel env дээрээс уншина
 
-  addMessage(message, true);
-  messageInput.value = '';
-  autoResizeTextarea();
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01"
+      },
+      body: JSON.stringify({
+        model: "claude-3-5-sonnet-20240620",
+        max_tokens: 512,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
 
-  const typingIndicator = showTyping();
-  const delay = 1000 + Math.random() * 2000;
-
-  setTimeout(async () => {        // ← async болгох
-    try {
-      hideTyping();
-      const response = await generateResponse(message); // ← await
-      addMessage(response);
-    } catch (err) {
-      addMessage('❌ ' + err.message);
-      console.error(err);
-    } finally {
-      isProcessing = false;
-      sendButton.disabled = false;
-      messageInput.focus();
-    }
-  }, delay);
+    const data = await r.json();
+    res.status(200).json({
+      reply: data.content?.[0]?.text || "⚠️ Claude-с хоосон хариу ирлээ"
+    });
+  } catch (e) {
+    res.status(500).json({ error: "Server error", details: e.message });
+  }
 }
-}
-        }
     </script>
 </body>
 </html>
