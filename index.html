@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced AI Chat</title>
+    <title>Монгол Апп</title>
     <style>
         * {
             margin: 0;
@@ -13,543 +13,1140 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .chat-container {
-            width: 90%;
-            max-width: 1200px;
-            height: 85vh;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            position: relative;
+            backdrop-filter: blur(20px);
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .app-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 60px;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px 40px;
+            border-radius: 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            backdrop-filter: blur(10px);
+            font-size: 18px;
+            text-align: center;
             overflow: hidden;
         }
 
-        .sidebar {
-            width: 280px;
-            background: #1e293b;
-            color: white;
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+
+        /* Header Actions */
+        .header-actions {
             display: flex;
-            flex-direction: column;
+            gap: 25px;
         }
 
-        .sidebar-header {
-            padding: 25px 20px;
-            border-bottom: 1px solid #334155;
-        }
-
-        .sidebar-header h1 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: #4f46e5;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .new-chat-btn {
-            margin: 20px;
-            padding: 12px 18px;
-            background: #4f46e5;
-            color: white;
+        .header-btn {
+            padding: 18px 30px;
             border: none;
-            border-radius: 10px;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
             cursor: pointer;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-
-        .new-chat-btn:hover {
-            background: #3730a3;
-        }
-
-        .main-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid #e2e8f0;
-            background: white;
-        }
-
-        .chat-header h2 {
-            font-size: 20px;
-            color: #1e293b;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: #f8fafc;
-        }
-
-        .message {
-            display: flex;
-            gap: 15px;
-            max-width: 85%;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            font-size: 16px;
-        }
-
-        .user .message-avatar {
-            background: #4f46e5;
-            color: white;
-        }
-
-        .bot .message-avatar {
-            background: #10b981;
-            color: white;
-        }
-
-        .message-content {
-            flex: 1;
-        }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .message-name {
+            font-size: 18px;
             font-weight: 600;
-            font-size: 14px;
-            color: #374151;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: #6b7280;
-        }
-
-        .message-text {
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 16px 20px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.6;
-            color: #374151;
-        }
-
-        .user .message-text {
-            background: #4f46e5;
-            color: white;
-            border-color: #4f46e5;
-        }
-
-        .message-text pre {
-            background: #f3f4f6;
-            padding: 12px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 8px 0;
-            font-family: 'Monaco', monospace;
-            font-size: 13px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .user .message-text pre {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #f3f4f6;
-        }
-
-        .typing-indicator {
-            display: none;
-        }
-
-        .typing-indicator.show {
-            display: flex;
-            gap: 15px;
-            max-width: 85%;
-            align-self: flex-start;
-        }
-
-        .typing-content {
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 16px 20px;
-            border-radius: 18px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #6b7280;
-            border-radius: 50%;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-        .input-area {
-            padding: 25px 30px;
-            border-top: 1px solid #e5e7eb;
-            background: white;
-        }
-
-        .input-container {
-            display: flex;
             gap: 12px;
-            align-items: flex-end;
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 8px;
-            border: 2px solid #e5e7eb;
-            transition: border-color 0.3s;
-        }
-
-        .input-container:focus-within {
-            border-color: #4f46e5;
-            background: white;
-        }
-
-        .message-input {
-            flex: 1;
-            border: none;
-            padding: 12px 16px;
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            background: transparent;
-            min-height: 20px;
-            max-height: 100px;
-            font-family: inherit;
-            line-height: 1.5;
-        }
-
-        .send-button {
-            width: 45px;
-            height: 45px;
-            border: none;
-            border-radius: 50%;
-            background: #4f46e5;
+            background: rgba(255, 255, 255, 0.25);
             color: white;
+        }
+
+        .header-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .menu-btn {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
             cursor: pointer;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 28px;
+            color: white;
+            transition: all 0.3s ease;
         }
 
-        .send-button:hover {
-            background: #3730a3;
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
             transform: scale(1.05);
         }
 
-        .send-button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-            transform: none;
+        /* Title */
+        .title {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .title h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
-        @keyframes typing {
-            0%, 80%, 100% {
-                transform: scale(0);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
+        .title p {
+            font-size: 24px;
+            opacity: 0.9;
+            font-weight: 500;
         }
 
+        /* Menu Grid - Responsive */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .menu-item {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 30px;
+            backdrop-filter: blur(15px);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-item .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        /* Bottom Navigation - Fixed */
+        .bottom-nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            padding: 20px 40px;
+            border-radius: 35px;
+            display: flex;
+            gap: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.15);
+        }
+
+        /* Overlay for all popups */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Settings Menu from Menu */
+        .settings-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            padding: 30px;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .settings-menu.open {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .settings-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-header h2 {
+            font-size: 24px;
+            color: #374151;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .close-settings {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: #6b7280;
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-settings:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Menu Options */
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-option {
+            width: 100%;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+            transition: all 0.3s ease;
+        }
+
+        .menu-option:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .menu-option .icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Sub Menus */
+        .sub-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            padding: 30px;
+            opacity: 0;
+            visibility: hidden;
+            overflow-y: auto;
+        }
+
+        .sub-menu.open {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sub-menu-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-menu {
+            width: 35px;
+            height: 35px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .sub-menu-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .upload-area {
+            padding: 25px;
+            border: 2px dashed #d1d5db;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .upload-area input {
+            display: none;
+        }
+
+        .upload-text {
+            color: #6b7280;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #374151;
+            transform: scale(1.05);
+        }
+
+        .color-option.green { background: linear-gradient(135deg, #10b981, #34d399); }
+        .color-option.blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+        .color-option.purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
+        .color-option.pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+        .color-option.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+        /* Chat Selection from Bottom */
+        .chat-selection {
+            position: fixed;
+            bottom: -100vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            z-index: 1000;
+            padding: 30px;
+        }
+
+        .chat-selection.open {
+            bottom: 0;
+        }
+
+        .chat-selection-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .drag-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 2px;
+            margin: 0 auto 20px;
+        }
+
+        .chat-selection h3 {
+            font-size: 20px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .chat-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-option {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-option.primary {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .chat-option.game {
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .chat-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Chat Screen */
+        .chat-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            z-index: 2000;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-screen.open {
+            transform: translateY(0);
+        }
+
+        .chat-header {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 40px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .back-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .chat-title {
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .message {
+            padding: 20px 30px;
+            border-radius: 30px;
+            max-width: 60%;
+            font-size: 18px;
+            line-height: 1.5;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .message.sent {
+            background: rgba(255, 255, 255, 0.3);
+            margin-left: auto;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .message.received {
+            background: rgba(255, 255, 255, 0.9);
+            color: #374151;
+        }
+
+        .message img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 20px;
+            margin-top: 15px;
+            display: block;
+        }
+
+        .chat-input-area {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .message-input {
+            flex-grow: 1;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 35px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            outline: none;
+            color: white;
+            font-size: 18px;
+        }
+
+        .message-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .image-btn, .send-btn {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-btn {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .send-btn {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .image-btn:hover, .send-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        #imageUpload {
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 20px;
+            margin: 15px auto;
+            cursor: pointer;
+            display: block;
+        }
+
+        #imagePreview {
+            text-align: center;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
+            .app-content {
+                padding: 20px;
             }
-            .chat-container {
-                width: 95%;
-                height: 90vh;
+            
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .header-actions {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .header-btn {
+                justify-content: center;
+            }
+            
+            .title h1 {
+                font-size: 32px;
+            }
+            
+            .title p {
+                font-size: 18px;
+            }
+            
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .bottom-nav {
+                bottom: 20px;
+                padding: 15px 25px;
+                gap: 20px;
+            }
+            
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h1>🤖 AI Chat Pro</h1>
-                <div class="user-info">
-                    <div class="user-avatar">МК</div>
-                    <div>
-                        <div style="font-weight: 500; font-size: 14px;">Миний чат</div>
-                        <div style="font-size: 12px; color: #94a3b8;">Online</div>
-                    </div>
-                </div>
-            </div>
-            <button class="new-chat-btn" onclick="clearChat()">
-                ✨ Шинэ чат
-            </button>
-        </div>
-
-        <div class="main-chat">
-            <div class="chat-header">
-                <h2>Claude AI Assistant</h2>
-            </div>
-
-            <div class="messages-container" id="messagesContainer">
-                <div class="message bot">
-                    <div class="message-avatar">🤖</div>
-                    <div class="message-content">
-                        <div class="message-header">
-                            <span class="message-name">Claude AI</span>
-                            <span class="message-time">одоо</span>
-                        </div>
-                        <div class="message-text">
-                            Сайн байна уу! Би Claude AI юм. Танд код бичих, програмчлалын асуулт хариулах, тайлбарлах зэргээр туслахад бэлэн байна. Юугаар туслая вэ? 🚀
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="typing-indicator" id="typingIndicator">
-                <div class="message-avatar" style="background: #10b981; color: white;">🤖</div>
-                <div class="typing-content">
-                    <span>Бичиж байна</span>
-                    <div class="typing-dots">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="input-area">
-                <div class="input-container">
-                    <textarea 
-                        class="message-input" 
-                        id="messageInput" 
-                        placeholder="Мессеж бичээд Enter дарна уу..."
-                        maxlength="2000"
-                    ></textarea>
-                    <button class="send-button" id="sendButton" onclick="sendMessage()">
-                        ➤
+    <div class="app-container">
+        <div class="background-overlay" id="backgroundOverlay"></div>
+        
+        <div class="app-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo" id="logoDisplay">ЛОГО</div>
+                
+                <div class="header-actions">
+                    <button class="header-btn" onclick="openChatSelection()">
+                        <span>💬</span>
+                        <span>Чат</span>
                     </button>
                 </div>
+                
+                <button class="menu-btn" onclick="openSettings()">☰</button>
+            </div>
+
+            <!-- Title -->
+            <div class="title">
+                <h1>МОНГОЛ АПП</h1>
+                <p>18 цэстэй • 2 чат • Зураг илгээх</p>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="menu-grid">
+                <button class="menu-item"><div class="icon">📷</div><div>Камер</div></button>
+                <button class="menu-item"><div class="icon">🎵</div><div>Хөгжим</div></button>
+                <button class="menu-item"><div class="icon">📚</div><div>Ном</div></button>
+                <button class="menu-item"><div class="icon">☕</div><div>Кафе</div></button>
+                <button class="menu-item"><div class="icon">🎮</div><div>Тоглоом</div></button>
+                <button class="menu-item"><div class="icon">📍</div><div>Газрын зураг</div></button>
+                <button class="menu-item"><div class="icon">🛍️</div><div>Дэлгүүр</div></button>
+                <button class="menu-item"><div class="icon">🚗</div><div>Тээвэр</div></button>
+                <button class="menu-item"><div class="icon">✈️</div><div>Аялал</div></button>
+                <button class="menu-item"><div class="icon">📞</div><div>Утас</div></button>
+                <button class="menu-item"><div class="icon">📧</div><div>И-мэйл</div></button>
+                <button class="menu-item"><div class="icon">📅</div><div>Календар</div></button>
+                <button class="menu-item"><div class="icon">⏰</div><div>Цаг</div></button>
+                <button class="menu-item"><div class="icon">⭐</div><div>Од</div></button>
+                <button class="menu-item"><div class="icon">❤️</div><div>Дуртай</div></button>
+                <button class="menu-item"><div class="icon">⚙️</div><div>Тохиргоо</div></button>
+                <button class="menu-item"><div class="icon">👤</div><div>Профайл</div></button>
+                <button class="menu-item"><div class="icon">📊</div><div>Бусад</div></button>
             </div>
         </div>
     </div>
 
-    <script>
-        const messagesContainer = document.getElementById('messagesContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const typingIndicator = document.getElementById('typingIndicator');
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button class="nav-btn">🏠</button>
+        <button class="nav-btn">🔍</button>
+        <button class="nav-btn" onclick="openChatSelection()">💬</button>
+        <button class="nav-btn">👤</button>
+    </div>
 
-        // Enter товчоор мессеж илгээх
-        messageInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+    <!-- Settings Menu -->
+    <div class="settings-menu" id="settingsMenu">
+        <button class="close-settings" onclick="closeAll()">✕</button>
+        <div class="settings-header">
+            <h2>Тохиргоо</h2>
+        </div>
+        
+        <div class="menu-options">
+            <button class="menu-option" onclick="openSubMenu('background')">
+                <span class="icon">🖼️</span>
+                <span>Арын зураг</span>
+            </button>
+            <button class="menu-option" onclick="openSubMenu('colors')">
+                <span class="icon">🎨</span>
+                <span>Өнгө солих</span>
+            </button>
+            <button class="menu-option" onclick="openSubMenu('logo')">
+                <span class="icon">📷</span>
+                <span>Лого</span>
+            </button>
+            <button class="menu-option">
+                <span class="icon">👤</span>
+                <span>Бүртгэл танилцуулга</span>
+            </button>
+            <button class="menu-option">
+                <span class="icon">⚙️</span>
+                <span>Үйлчилгээ тохиргоо</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sub Menus -->
+    <div class="sub-menu" id="backgroundMenu">
+        <div class="sub-menu-header">
+            <button class="back-to-menu" onclick="backToSettings()">←</button>
+            <h3 class="sub-menu-title">Арын зураг</h3>
+        </div>
+        <div class="upload-area" onclick="document.getElementById('bgUpload').click()">
+            <div class="upload-text">📷 Зураг сонгох</div>
+            <input type="file" id="bgUpload" accept="image/*" onchange="changeBackground(this)">
+        </div>
+    </div>
+
+    <div class="sub-menu" id="colorsMenu">
+        <div class="sub-menu-header">
+            <button class="back-to-menu" onclick="backToSettings()">←</button>
+            <h3 class="sub-menu-title">Өнгө солих</h3>
+        </div>
+        <div class="color-grid">
+            <button class="color-option green active" onclick="changeColor('green', this)"></button>
+            <button class="color-option blue" onclick="changeColor('blue', this)"></button>
+            <button class="color-option purple" onclick="changeColor('purple', this)"></button>
+            <button class="color-option pink" onclick="changeColor('pink', this)"></button>
+            <button class="color-option orange" onclick="changeColor('orange', this)"></button>
+        </div>
+    </div>
+
+    <div class="sub-menu" id="logoMenu">
+        <div class="sub-menu-header">
+            <button class="back-to-menu" onclick="backToSettings()">←</button>
+            <h3 class="sub-menu-title">Лого</h3>
+        </div>
+        <div class="upload-area" onclick="document.getElementById('logoUpload').click()">
+            <div class="upload-text">🖼️ Лого сонгох</div>
+            <input type="file" id="logoUpload" accept="image/*" onchange="changeLogo(this)">
+        </div>
+    </div>
+
+    <!-- Chat Selection -->
+    <div class="chat-selection" id="chatSelection">
+        <div class="chat-selection-header">
+            <div class="drag-handle"></div>
+            <h3>Чат сонгох</h3>
+        </div>
+        
+        <div class="chat-options">
+            <button class="chat-option primary" onclick="openChat('regular')">
+                <span>💬</span>
+                <span>Миний чат</span>
+            </button>
+            <button class="chat-option game" onclick="openChat('game')">
+                <span>🎮</span>
+                <span>Ойунсана чат</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat Screen -->
+    <div class="chat-screen" id="chatScreen">
+        <div class="chat-header">
+            <button class="back-btn" onclick="closeChat()">←</button>
+            <h2 class="chat-title" id="chatTitle">Миний чат</h2>
+            <div style="width: 70px;"></div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="message received">Сайн байна уу!</div>
+            <div class="message sent">Сайн байна, та яаж байна?</div>
+        </div>
+        
+        <div class="chat-input-area">
+            <div class="input-row">
+                <input type="text" class="message-input" placeholder="Мессеж бичнэ үү..." id="messageInput">
+                <div class="input-buttons">
+                    <button class="image-btn" onclick="document.getElementById('imageUpload').click()">📷</button>
+                    <button class="send-btn" onclick="sendMessage()">→</button>
+                </div>
+            </div>
+            <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(this)">
+            <div id="imagePreview"></div>
+        </div>
+    </div>
+
+    <script>
+        const colorThemes = {
+            green: 'linear-gradient(135deg, #10b981, #3b82f6)',
+            blue: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+            purple: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
+            pink: 'linear-gradient(135deg, #ec4899, #f472b6)',
+            orange: 'linear-gradient(135deg, #f59e0b, #fbbf24)'
+        };
+
+        let selectedImage = null;
+
+        // Settings Menu Functions
+        function openSettings() {
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('settingsMenu').classList.add('open');
+        }
+
+        function closeAll() {
+            document.getElementById('overlay').classList.remove('open');
+            document.getElementById('settingsMenu').classList.remove('open');
+            document.getElementById('chatSelection').classList.remove('open');
+            
+            // Close all sub menus
+            document.querySelectorAll('.sub-menu').forEach(menu => {
+                menu.classList.remove('open');
+            });
+        }
+
+        function openSubMenu(menuName) {
+            // Hide main settings menu
+            document.getElementById('settingsMenu').classList.remove('open');
+            
+            // Show specific sub menu
+            document.getElementById(menuName + 'Menu').classList.add('open');
+        }
+
+        function backToSettings() {
+            // Hide all sub menus
+            document.querySelectorAll('.sub-menu').forEach(menu => {
+                menu.classList.remove('open');
+            });
+            
+            // Show main settings menu
+            document.getElementById('settingsMenu').classList.add('open');
+        }
+
+        // Chat Functions
+        function openChatSelection() {
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('chatSelection').classList.add('open');
+        }
+
+        function openChat(type) {
+            const chatScreen = document.getElementById('chatScreen');
+            const chatTitle = document.getElementById('chatTitle');
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Close chat selection
+            closeAll();
+            
+            chatTitle.textContent = type === 'game' ? 'Ойунсана чат' : 'Миний чат';
+            
+            if (type === 'game') {
+                chatMessages.innerHTML = `
+                    <div class="message received">
+                        Тоглоом эхлүүлэх үү? 🎮
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgwIiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjq48L3RleHQ+Cjwvc3ZnPg==" alt="Тоглоом">
+                    </div>
+                    <div class="message sent">Тийм ээ, эхлүүлье!</div>
+                    <div class="message received">Ямар тоглоом дуртай вэ?</div>
+                `;
+            } else {
+                chatMessages.innerHTML = `
+                    <div class="message received">Сайн байна уу!</div>
+                    <div class="message sent">Сайн байна, та яаж байна?</div>
+                    <div class="message received">
+                        Маш сайн байна! Зураг илгээж үзэх үү?
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzEwYjk4MSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4yHIFppcmFnPC90ZXh0Pgo8L3N2Zz4=" alt="Жишээ зураг">
+                    </div>
+                `;
+            }
+            
+            chatScreen.classList.add('open');
+        }
+
+        function closeChat() {
+            document.getElementById('chatScreen').classList.remove('open');
+            removeImagePreview();
+        }
+
+        // Customization Functions
+        function changeColor(color, button) {
+            const appContainer = document.querySelector('.app-container');
+            const chatScreen = document.getElementById('chatScreen');
+            
+            appContainer.style.background = colorThemes[color];
+            chatScreen.style.background = colorThemes[color];
+            document.body.style.background = colorThemes[color];
+            
+            document.querySelectorAll('.color-option').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function changeBackground(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const overlay = document.getElementById('backgroundOverlay');
+                    overlay.style.backgroundImage = `url(${e.target.result})`;
+                    overlay.style.opacity = '0.8';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function changeLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoDisplay = document.getElementById('logoDisplay');
+                    logoDisplay.innerHTML = `<img src="${e.target.result}" alt="Лого">`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Image Preview Functions
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImage = e.target.result;
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" class="image-preview" alt="Зураг">
+                        <button onclick="removeImagePreview()" style="margin-top: 10px; padding: 10px 20px; background: rgba(255,255,255,0.5); border: none; border-radius: 15px; color: white; cursor: pointer; font-size: 16px;">Арилгах ✕</button>
+                    `;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeImagePreview() {
+            selectedImage = null;
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('imageUpload').value = '';
+        }
+
+        // Message Functions
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const messagesDiv = document.getElementById('chatMessages');
+            
+            if (input.value.trim() || selectedImage) {
+                const newMessage = document.createElement('div');
+                newMessage.className = 'message sent';
+                
+                let messageContent = '';
+                if (input.value.trim()) {
+                    messageContent += input.value;
+                }
+                if (selectedImage) {
+                    messageContent += `<img src="${selectedImage}" alt="Илгээсэн зураг">`;
+                }
+                
+                newMessage.innerHTML = messageContent;
+                messagesDiv.appendChild(newMessage);
+                
+                input.value = '';
+                removeImagePreview();
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                
+                // Auto reply with confirmation
+                setTimeout(() => {
+                    const replyMessage = document.createElement('div');
+                    replyMessage.className = 'message received';
+                    if (selectedImage) {
+                        replyMessage.textContent = 'Зураг хүлээн авлаа! 📸 Маш сайхан байна!';
+                    } else {
+                        replyMessage.textContent = 'Мессежийг хүлээн авлаа! 💬';
+                    }
+                    messagesDiv.appendChild(replyMessage);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }, 1000);
+            }
+        }
+
+        // Enter key support
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
                 sendMessage();
             }
         });
 
-        // Input өөрчлөгдөхөд send товчийг идэвхжүүлэх
-        messageInput.addEventListener('input', function() {
-            const hasText = messageInput.value.trim().length > 0;
-            sendButton.disabled = !hasText;
-            
-            // Auto resize textarea
-            messageInput.style.height = 'auto';
-            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
-        });
-
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            // Хэрэглэгчийн мессежийг нэмэх
-            addMessage(message, 'user');
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
-            
-            // Send товчийг идэвхгүй болгох
-            sendButton.disabled = true;
-            
-            // Typing indicator харуулах
-            showTyping();
-
-            // AI хариулт үүсгэх
-            setTimeout(() => {
-                hideTyping();
-                const response = generateResponse(message);
-                addMessage(response, 'bot');
-                sendButton.disabled = false;
-                messageInput.focus();
-            }, Math.random() * 2000 + 1000);
-        }
-
-        function addMessage(content, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + sender;
-            
-            const time = new Date().toLocaleTimeString('mn-MN', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            const avatar = sender === 'user' ? 'МК' : '🤖';
-            const name = sender === 'user' ? 'Та' : 'Claude AI';
-            
-            // Код блок боловсруулах
-            const processedContent = processContent(content);
-
-            messageDiv.innerHTML = 
-                '<div class="message-avatar">' + avatar + '</div>' +
-                '<div class="message-content">' +
-                    '<div class="message-header">' +
-                        '<span class="message-name">' + name + '</span>' +
-                        '<span class="message-time">' + time + '</span>' +
-                    '</div>' +
-                    '<div class="message-text">' + processedContent + '</div>' +
-                '</div>';
-
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function processContent(content) {
-            // Код блок боловсруулах
-            return content
-                .replace(/```(\w+)?\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px; font-family: Monaco, monospace;">$1</code>')
-                .replace(/\n/g, '<br>');
-        }
-
-        function showTyping() {
-            typingIndicator.classList.add('show');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function hideTyping() {
-            typingIndicator.classList.remove('show');
-        }
-
-        function generateResponse(message) {
-            const msg = message.toLowerCase();
-            
-            // Мэндчилгээ
-            if (msg.includes('сайн') || msg.includes('байна')) {
-                return 'Сайн байна уу! Би Claude AI туслах систем юм. Код бичих, програмчлалын асуулт хариулах, алгоритм тайлбарлах зэргээр туслаж чадна. Юугаар туслая вэ?';
+        // Close overlay when clicking outside
+        document.getElementById('overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAll();
             }
-            
-            // JavaScript код
-            if (msg.includes('javascript') || msg.includes('js')) {
-                return 'JavaScript жишээ:\n\n```javascript\n// Modern JavaScript функц\nconst fetchData = async (url) => {\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    return data;\n  } catch (error) {\n    console.error("Алдаа:", error);\n  }\n};\n\n// Array methods\nconst numbers = [1, 2, 3, 4, 5];\nconst doubled = numbers.map(n => n * 2);\nconst evens = numbers.filter(n => n % 2 === 0);\n\nconsole.log(doubled); // [2, 4, 6, 8, 10]\n```\n\nТанд өөр ямар JavaScript код хэрэгтэй вэ?';
-            }
-            
-            // Python код
-            if (msg.includes('python')) {
-                return 'Python жишээ:\n\n```python\n# Data processing\nimport pandas as pd\nimport numpy as np\n\ndef process_data(filename):\n    # CSV файл унших\n    df = pd.read_csv(filename)\n    \n    # Дата цэвэрлэх\n    df = df.dropna()\n    df["processed"] = df["value"].apply(lambda x: x * 2)\n    \n    return df\n\n# List comprehension\nnumbers = [1, 2, 3, 4, 5]\nsquared = [x**2 for x in numbers if x % 2 == 0]\nprint(squared)  # [4, 16]\n\n# Class жишээ\nclass Calculator:\n    def __init__(self):\n        self.result = 0\n    \n    def add(self, num):\n        self.result += num\n        return self\n```\n\nТанд Python-ээр өөр юу хийх хэрэгтэй вэ?';
-            }
-            
-            // React код
-            if (msg.includes('react')) {
-                return 'React компонент жишээ:\n\n```javascript\nimport React, { useState } from "react";\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  const [name, setName] = useState("");\n\n  const increment = () => {\n    setCount(count + 1);\n  };\n\n  return (\n    <div className="counter">\n      <h2>Тооллого: {count}</h2>\n      <button onClick={increment}>\n        Нэмэх\n      </button>\n      \n      <input \n        type="text"\n        value={name}\n        onChange={(e) => setName(e.target.value)}\n        placeholder="Нэрээ оруулна уу"\n      />\n      {name && <p>Сайн байна уу, {name}!</p>}\n    </div>\n  );\n}\n\nexport default Counter;\n```\n\nReact Hooks, state management талаар илүү асууж болно!';
-            }
-            
-            // API асуулт
-            if (msg.includes('api')) {
-                return '🔌 API жишээ:\n\n```javascript\n// Modern API client\nclass ApiClient {\n  constructor(baseUrl) {\n    this.baseUrl = baseUrl;\n  }\n\n  async get(endpoint) {\n    const response = await fetch(this.baseUrl + endpoint);\n    if (!response.ok) {\n      throw new Error("API алдаа: " + response.status);\n    }\n    return response.json();\n  }\n\n  async post(endpoint, data) {\n    const response = await fetch(this.baseUrl + endpoint, {\n      method: "POST",\n      headers: {\n        "Content-Type": "application/json"\n      },\n      body: JSON.stringify(data)\n    });\n    return response.json();\n  }\n}\n\n// Ашиглах нь\nconst api = new ApiClient("https://api.example.com");\n\ntry {\n  const users = await api.get("/users");\n  console.log(users);\n} catch (error) {\n  console.error("Алдаа гарлаа:", error);\n}\n```\n\nREST API, GraphQL талаар илүү мэдэхийг хүсэж байна уу?';
-            }
-            
-            // Веб хөгжүүлэлт
-            if (msg.includes('сайт') || msg.includes('веб')) {
-                return '🌐 Веб хөгжүүлэлтийн зөвлөгөө:\n\n**Frontend технологи:**\n• HTML5, CSS3 (Flexbox, Grid)\n• JavaScript ES6+\n• React.js эсвэл Vue.js\n• TypeScript (илүү найдвартай код)\n\n**Backend сонголтууд:**\n• Node.js + Express\n• Python + Django/Flask\n• Database: MongoDB эсвэл PostgreSQL\n\n**Deployment:**\n• Frontend: Vercel, Netlify\n• Backend: Railway, Render\n• Domain: Namecheap\n\n**Алхам алхмын процесс:**\n1. Дизайн хийх (Figma)\n2. HTML/CSS суурь бүтэц\n3. JavaScript интерактив функц\n4. Backend API холбох\n5. Database холбох\n6. Deploy хийх\n\nТанд ямар хэсгээр илүү туслах вэ?';
-            }
-            
-            // Ерөнхий хариулт
-            const responses = [
-                'Сонирхолтой асуулт! Илүү дэлгэрэнгүй тайлбарлаж болох уу?',
-                'Энэ сэдвээр илүү ярилцъя. Танд яг юу хэрэгтэй вэ?',
-                'Ойлголоо! Танд энэ талаар илүү тусламж хэрэгтэй юу?',
-                'Зөв асуулт байна! Би танд энэ асуудлаар туслахад бэлэн.',
-                'Энэ талаар маш их зүйл ярилцаж болно. Эхлээд юунаас эхэлье вэ?'
-            ];
-            
-            return responses[Math.floor(Math.random() * responses.length)];
-        }
-
-        function clearChat() {
-            if (confirm('Чатыг цэвэрлэх үү?')) {
-                messagesContainer.innerHTML = '';
-                addMessage('Сайн байна уу! Шинэ чат эхэллээ. Танд хэрхэн туслах вэ?', 'bot');
-            }
-        }
-
-        // Хуудас ачааллагдахад input дээр focus хийх
-        window.addEventListener('load', function() {
-            messageInput.focus();
-            console.log('🚀 Advanced Chat система амжилттай ачааллагдлаа!');
         });
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
