@@ -497,8 +497,7 @@
             const randomEgg = easterEggs[Math.floor(Math.random() * easterEggs.length)];
             addMessage(randomEgg);
         }
-
-      async function sendMessage() {
+async function sendMessage() {
   if (isProcessing) return;
   const message = messageInput.value.trim();
   if (!message) return;
@@ -513,15 +512,21 @@
   const typingIndicator = showTyping();
   const delay = 1000 + Math.random() * 2000;
 
-  setTimeout(() => {
-    hideTyping();
-    const response = generateResponse(message); // ← локал логик
-    addMessage(response);
-
-    isProcessing = false;
-    sendButton.disabled = false;
-    messageInput.focus();
+  setTimeout(async () => {        // ← async болгох
+    try {
+      hideTyping();
+      const response = await generateResponse(message); // ← await
+      addMessage(response);
+    } catch (err) {
+      addMessage('❌ ' + err.message);
+      console.error(err);
+    } finally {
+      isProcessing = false;
+      sendButton.disabled = false;
+      messageInput.focus();
+    }
   }, delay);
+}
 }
         }
     </script>
