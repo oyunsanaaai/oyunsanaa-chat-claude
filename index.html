@@ -40,42 +40,16 @@
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
-    async function sendMessage() {
-      if (isSending) return;
-      const text = messageInput.value.trim();
-      if (!text) return;
-
-      appendMessage(text, 'user');
-      history.push({ role: 'user', content: text });
-      messageInput.value = '';
-      isSending = true;
-      sendButton.disabled = true;
-
-      try {
-        const resp = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, history })
-        });
-        const data = await resp.json();
-        const reply = data.reply || '⚠️ Алдаа гарлаа.';
-        appendMessage(reply, 'assistant');
-        history.push({ role: 'assistant', content: reply });
-      } catch (e) {
-        appendMessage('⚠️ Сүлжээний алдаа.', 'assistant');
-      } finally {
-        isSending = false;
-        sendButton.disabled = false;
-      }
-    }
-
-    sendButton.addEventListener('click', sendMessage);
-    messageInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
+  async function generateResponse(message) {
+  const res = await fetch('/api/chat', {
+  method:'POST', headers:{'Content-Type':'application/json'},
+  body: JSON.stringify({ prompt: message })
+});
+const { reply } = await res.json();
         sendMessage();
       }
     });
+    
   </script>
 </body>
 </html>
