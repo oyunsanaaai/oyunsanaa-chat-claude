@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API чат</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 500px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .chat-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .api-status {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            color: white;
+            line-height: 1.4;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background: rgba(255, 255, 255, 0.25);
+            border-bottom-right-radius: 6px;
+        }
+
+        .message-bot {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom-left-radius: 6px;
+        }
+
+        .message-header {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .message-time {
+            font-size: 9px;
+            opacity: 0.5;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 20px;
+            border-radius: 18px;
+            border-bottom-left-radius: 6px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+            40% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .input-area {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .api-setup {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .api-setup label {
+            display: block;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .api-setup select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .api-setup select option {
+            background: #333;
+            color: white;
+        }
+
+        .api-setup input[type="password"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .api-setup input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            resize: none;
+            min-height: 24px;
+            max-height: 100px;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .send-button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.4);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .success-message {
+            background: rgba(81, 207, 102, 0.2);
+            border: 1px solid rgba(81, 207, 102, 0.4);
+            color: #51cf66;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="logo">🤖</div>
+            <div class="chat-title">AI чат</div>
+            <div class="api-status" id="apiStatus">API тохиргоогүй</div>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="message message-bot">
+                <div class="message-header">AI туслах</div>
+                <div>Сайн байна уу! Доорх тохиргоогоор API key оруулаад чатлаж эхлээрэй! 🚀</div>
+                <div class="message-time" id="welcomeTime"></div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="api-setup">
+                <label>🔑 AI сонголт:</label>
+                <select id="apiProvider">
+                    <option value="">API сонгоно уу...</option>
+                    <option value="openai">OpenAI (ChatGPT)</option>
+                    <option value="claude">Claude AI</option>
+                    <option value="gemini">Google Gemini</option>
+                </select>
+                
+                <label>API Key:</label>
+                <input type="password" id="apiKey" placeholder="API key-гээ оруулна уу...">
+                
+                <div id="statusMessage"></div>
+            </div>
+
+            <div class="input-row">
+                <textarea class="chat-input" id="messageInput" placeholder="Мессеж бичнэ үү..." rows="1"></textarea>
+                <button class="send-button" id="sendButton" onclick="sendMessage()">🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentApiProvider = '';
+        let currentApiKey = '';
+        let isProcessing = false;
+
+        // DOM элементүүд
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const apiProviderSelect = document.getElementById('apiProvider');
+        const apiKeyInput = document.getElementById('apiKey');
+        const apiStatus = document.getElementById('apiStatus');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Анхны тохиргоо
+        document.addEventListener('DOMContentLoaded', function() {
+            updateWelcomeTime();
+            setupEventListeners();
+            setupTextareaAutoResize();
+        });
+
+        // Event listeners
+        function setupEventListeners() {
+            // API тохиргоо өөрчлөгдөхөд
+            apiProviderSelect.addEventListener('change', handleApiProviderChange);
+            apiKeyInput.addEventListener('input', handleApiKeyChange);
+            
+            // Enter товчоор мессеж илгээх
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Textarea auto-resize
+            messageInput.addEventListener('input', autoResizeTextarea);
+        }
+
+        // API provider өөрчлөгдөх
+        function handleApiProviderChange() {
+            currentApiProvider = apiProviderSelect.value;
+            updateApiStatus();
+            validateApiSetup();
+        }
+
+        // API key өөрчлөгдөх
+        function handleApiKeyChange() {
+            currentApiKey = apiKeyInput.value.trim();
+            updateApiStatus();
+            validateApiSetup();
+        }
+
+        // API статус шинэчлэх
+        function updateApiStatus() {
+            if (currentApiProvider && currentApiKey) {
+                apiStatus.textContent = `${getProviderName(currentApiProvider)} бэлэн`;
+                apiStatus.style.background = 'rgba(81, 207, 102, 0.2)';
+                apiStatus.style.color = '#51cf66';
+            } else {
+                apiStatus.textContent = 'API тохиргоогүй';
+                apiStatus.style.background = 'rgba(255, 255, 255, 0.1)';
+                apiStatus.style.color = 'rgba(255, 255, 255, 0.7)';
+            }
+        }
+
+        // Provider нэр авах
+        function getProviderName(provider) {
+            const names = {
+                'openai': 'OpenAI',
+                'claude': 'Claude',
+                'gemini': 'Gemini'
+            };
+            return names[provider] || provider;
+        }
+
+        // API тохиргоо шалгах
+        function validateApiSetup() {
+            if (!currentApiProvider) {
+                showStatusMessage('AI сонгоно уу', 'error');
+                return false;
+            }
+            
+            if (!currentApiKey) {
+                showStatusMessage('API key оруулна уу', 'error');
+                return false;
+            }
+
+            if (currentApiKey.length < 10) {
+                showStatusMessage('API key богино байна', 'error');
+                return false;
+            }
+
+            showStatusMessage('✅ Бэлэн байна!', 'success');
+            return true;
+        }
+
+        // Статус мессеж харуулах
+        function showStatusMessage(message, type) {
+            statusMessage.className = type === 'error' ? 'error-message' : 'success-message';
+            statusMessage.textContent = message;
+            
+            if (message === '✅ Бэлэн байна!') {
+                setTimeout(() => {
+                    statusMessage.textContent = '';
+                    statusMessage.className = '';
+                }, 2000);
+            }
+        }
+
+        // Textarea auto-resize
+        function setupTextareaAutoResize() {
+            messageInput.style.height = 'auto';
+        }
+
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = messageInput.scrollHeight + 'px';
+        }
+
+        // Цаг нэмэх
+        function updateWelcomeTime() {
+            const welcomeTime = document.getElementById('welcomeTime');
+            if (welcomeTime) {
+                welcomeTime.textContent = new Date().toLocaleTimeString('mn-MN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        // Мессеж нэмэх
+        function addMessage(content, isUser = false, showTime = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'message-user' : 'message-bot'}`;
+            
+            const currentTime = new Date().toLocaleTimeString('mn-MN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            messageDiv.innerHTML = `
+                <div class="message-header">${isUser ? 'Та' : 'AI туслах'}</div>
+                <div>${content}</div>
+                ${showTime ? `<div class="message-time">${currentTime}</div>` : ''}
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return messageDiv;
+        }
+
+        // Typing индикатор
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return typingDiv;
+        }
+
+        function hideTyping() {
+            const typingDiv = document.getElementById('typingIndicator');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        }
+
+        // API дуудлага хийх
+        async function callAPI(message) {
+            let url, headers, body;
+            
+            switch(currentApiProvider) {
+                case 'openai':
+                    url = 'https://api.openai.com/v1/chat/completions';
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentApiKey}`
+                    };
+                    body = {
+                        model: 'gpt-3.5-turbo',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'Та бол найрсаг туслах. Монгол хэлээр хариулна уу.'
+                            },
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        max_tokens: 500,
+                        temperature: 0.7
+                    };
+                    break;
+                    
+                case 'claude':
+                    url = 'https://api.anthropic.com/v1/messages';
+                    headers = {
+                        'Content-Type': 'application/json',
+                        'x-api-key': currentApiKey,
+                        'anthropic-version': '2023-06-01'
+                    };
+                    body = {
+                        model: 'claude-3-haiku-20240307',
+                        max_tokens: 500,
+                        messages: [{
+                            role: 'user',
+                            content: `Монгол хэлээр хариулна уу: ${message}`
+                        }]
+                    };
+                    break;
+                    
+                case 'gemini':
+                    url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${currentApiKey}`;
+                    headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    body = {
+                        contents: [{
+                            parts: [{
+                                text: `Монгол хэлээр хариулна уу: ${message}`
+                            }]
+                        }]
+                    };
+                    break;
+                    
+                default:
+                    throw new Error('API сонгогдоогүй байна');
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`API алдаа (${response.status}): ${errorText}`);
+            }
+
+            const data = await response.json();
+            
+            // Хариуг provider-ээр ялгаж авах
+            switch(currentApiProvider) {
+                case 'openai':
+                    return data.choices[0].message.content;
+                case 'claude':
+                    return data.content[0].text;
+                case 'gemini':
+                    return data.candidates[0].content.parts[0].text;
+                default:
+                    throw new Error('Хариу олдсонгүй');
+            }
+        }
+
+        // Мессеж илгээх
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message || isProcessing) return;
+            
+            if (!validateApiSetup()) {
+                return;
+            }
+
+            // UI шинэчлэх
+            isProcessing = true;
+            sendButton.disabled = true;
+            
+            // Хэрэглэгчийн мессеж нэмэх
+            addMessage(message, true);
+            messageInput.value = '';
+            autoResizeTextarea();
+            
+            // Typing индикатор харуулах
+            const typingIndicator = showTyping();
+            
+            try {
+                // API дуудлага
+                const response = await callAPI(message);
+                
+                // Typing индикатор арилгах
+                hideTyping();
+                
+                // AI-ийн хариу нэмэх
+                addMessage(response);
+                
+            } catch (error) {
+                console.error('API алдаа:', error);
+                hideTyping();
+                
+                let errorMsg = 'API алдаа гарлаа. ';
+                
+                if (error.message.includes('401') || error.message.includes('403')) {
+                    errorMsg += 'API key буруу байна.';
+                } else if (error.message.includes('429')) {
+                    errorMsg += 'Хэтэрхий олон хүсэлт илгээсэн байна.';
+                } else if (error.message.includes('CORS')) {
+                    errorMsg += 'CORS алдаа. Браузерийн extension ашиглах хэрэгтэй.';
+                } else {
+                    errorMsg += error.message;
+                }
+                
+                addMessage(`❌ ${errorMsg}`);
+            }
+            
+            // UI буцаах
+            isProcessing = false;
+            sendButton.disabled = false;
+            messageInput.focus();
+        }
+
+        // Focus management
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.api-setup')) {
+                messageInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
