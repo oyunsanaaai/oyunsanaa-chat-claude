@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Chat</title>
+    <title>Advanced AI Chat</title>
     <style>
         * {
             margin: 0;
@@ -22,105 +22,203 @@
 
         .chat-container {
             width: 90%;
-            max-width: 800px;
-            height: 80vh;
+            max-width: 1200px;
+            height: 85vh;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             display: flex;
-            flex-direction: column;
             overflow: hidden;
         }
 
-        .chat-header {
+        .sidebar {
+            width: 280px;
+            background: #1e293b;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .new-chat-btn {
+            margin: 20px;
+            padding: 12px 18px;
             background: #4f46e5;
             color: white;
-            padding: 20px;
-            text-align: center;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background: #3730a3;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+        }
+
+        .chat-header h2 {
             font-size: 20px;
-            font-weight: bold;
+            color: #1e293b;
         }
 
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 25px 30px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
+            background: #f8fafc;
         }
 
         .message {
-            max-width: 80%;
-            padding: 15px 20px;
-            border-radius: 20px;
-            word-wrap: break-word;
-            animation: fadeIn 0.3s ease-in;
+            display: flex;
+            gap: 15px;
+            max-width: 85%;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .user-message {
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .user .message-avatar {
             background: #4f46e5;
             color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
         }
 
-        .bot-message {
-            background: #f3f4f6;
-            color: #1f2937;
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
+        .bot .message-avatar {
+            background: #10b981;
+            color: white;
         }
 
-        .input-container {
-            padding: 20px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            gap: 10px;
-        }
-
-        .message-input {
+        .message-content {
             flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
         }
 
-        .message-input:focus {
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .message-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .message-text {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 16px 20px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .user .message-text {
+            background: #4f46e5;
+            color: white;
             border-color: #4f46e5;
         }
 
-        .send-button {
-            padding: 15px 25px;
-            background: #4f46e5;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
+        .message-text pre {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 8px 0;
+            font-family: 'Monaco', monospace;
+            font-size: 13px;
+            border: 1px solid #e5e7eb;
         }
 
-        .send-button:hover {
-            background: #3730a3;
-        }
-
-        .send-button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
+        .user .message-text pre {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #f3f4f6;
         }
 
         .typing-indicator {
             display: none;
+        }
+
+        .typing-indicator.show {
+            display: flex;
+            gap: 15px;
+            max-width: 85%;
             align-self: flex-start;
-            padding: 15px 20px;
-            background: #f3f4f6;
-            border-radius: 20px;
-            border-bottom-left-radius: 5px;
+        }
+
+        .typing-content {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 16px 20px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .typing-dots {
@@ -131,7 +229,7 @@
         .typing-dot {
             width: 8px;
             height: 8px;
-            background: #9ca3af;
+            background: #6b7280;
             border-radius: 50%;
             animation: typing 1.4s infinite ease-in-out;
         }
@@ -139,71 +237,164 @@
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
 
+        .input-area {
+            padding: 25px 30px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 8px;
+            border: 2px solid #e5e7eb;
+            transition: border-color 0.3s;
+        }
+
+        .input-container:focus-within {
+            border-color: #4f46e5;
+            background: white;
+        }
+
+        .message-input {
+            flex: 1;
+            border: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            background: transparent;
+            min-height: 20px;
+            max-height: 100px;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
+        .send-button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .send-button:hover {
+            background: #3730a3;
+            transform: scale(1.05);
+        }
+
+        .send-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes typing {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-            40% { transform: scale(1); opacity: 1; }
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .error-message {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-            align-self: flex-start;
-        }
-
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
             .chat-container {
                 width: 95%;
                 height: 90vh;
-                border-radius: 10px;
-            }
-            
-            .message {
-                max-width: 90%;
-            }
-            
-            .input-container {
-                padding: 15px;
             }
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-header">
-            🤖 Claude Chat
-        </div>
-        
-        <div class="messages-container" id="messagesContainer">
-            <div class="message bot-message">
-                Сайн байна уу! Би Claude AI юм. Танд хэрхэн туслах вэ?
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🤖 AI Chat Pro</h1>
+                <div class="user-info">
+                    <div class="user-avatar">МК</div>
+                    <div>
+                        <div style="font-weight: 500; font-size: 14px;">Миний чат</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Online</div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="typing-indicator" id="typingIndicator">
-            <div class="typing-dots">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-        </div>
-        
-        <div class="input-container">
-            <input 
-                type="text" 
-                class="message-input" 
-                id="messageInput" 
-                placeholder="Мессеж бичээд Enter дарна уу..."
-                maxlength="1000"
-            >
-            <button class="send-button" id="sendButton" onclick="sendMessage()">
-                Илгээ
+            <button class="new-chat-btn" onclick="clearChat()">
+                ✨ Шинэ чат
             </button>
+        </div>
+
+        <div class="main-chat">
+            <div class="chat-header">
+                <h2>Claude AI Assistant</h2>
+            </div>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="message bot">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-name">Claude AI</span>
+                            <span class="message-time">одоо</span>
+                        </div>
+                        <div class="message-text">
+                            Сайн байна уу! Би Claude AI юм. Танд код бичих, програмчлалын асуулт хариулах, тайлбарлах зэргээр туслахад бэлэн байна. Юугаар туслая вэ? 🚀
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="message-avatar" style="background: #10b981; color: white;">🤖</div>
+                <div class="typing-content">
+                    <span>Бичиж байна</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        class="message-input" 
+                        id="messageInput" 
+                        placeholder="Мессеж бичээд Enter дарна уу..."
+                        maxlength="2000"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -213,129 +404,151 @@
         const sendButton = document.getElementById('sendButton');
         const typingIndicator = document.getElementById('typingIndicator');
 
-        // Enter товчоор илгээх
-        messageInput.addEventListener('keypress', function(e) {
+        // Enter товчоор мессеж илгээх
+        messageInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
 
-        // Код бичих чадвартай AI функц
+        // Input өөрчлөгдөхөд send товчийг идэвхжүүлэх
+        messageInput.addEventListener('input', function() {
+            const hasText = messageInput.value.trim().length > 0;
+            sendButton.disabled = !hasText;
+            
+            // Auto resize textarea
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+        });
+
         async function sendMessage() {
             const message = messageInput.value.trim();
-            
             if (!message) return;
-            
-            // Хэрэглэгчийн мессежийг харуулах
+
+            // Хэрэглэгчийн мессежийг нэмэх
             addMessage(message, 'user');
             messageInput.value = '';
+            messageInput.style.height = 'auto';
             
-            // Товчуудыг идэвхгүй болгох
+            // Send товчийг идэвхгүй болгох
             sendButton.disabled = true;
-            messageInput.disabled = true;
             
             // Typing indicator харуулах
-            showTypingIndicator();
-            
-            // 1-2 секундын дараа хариулах
-            const delay = Math.random() * 1000 + 1000;
-            
+            showTyping();
+
+            // AI хариулт үүсгэх
             setTimeout(() => {
-                hideTypingIndicator();
-                
-                let response = generateResponse(message);
+                hideTyping();
+                const response = generateResponse(message);
                 addMessage(response, 'bot');
-                
-                // Товчуудыг дахин идэвхжүүлэх
                 sendButton.disabled = false;
-                messageInput.disabled = false;
                 messageInput.focus();
-            }, delay);
+            }, Math.random() * 2000 + 1000);
         }
 
-        // Ухаалаг хариулт үүсгэх функц
+        function addMessage(content, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender;
+            
+            const time = new Date().toLocaleTimeString('mn-MN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const avatar = sender === 'user' ? 'МК' : '🤖';
+            const name = sender === 'user' ? 'Та' : 'Claude AI';
+            
+            // Код блок боловсруулах
+            const processedContent = processContent(content);
+
+            messageDiv.innerHTML = 
+                '<div class="message-avatar">' + avatar + '</div>' +
+                '<div class="message-content">' +
+                    '<div class="message-header">' +
+                        '<span class="message-name">' + name + '</span>' +
+                        '<span class="message-time">' + time + '</span>' +
+                    '</div>' +
+                    '<div class="message-text">' + processedContent + '</div>' +
+                '</div>';
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function processContent(content) {
+            // Код блок боловсруулах
+            return content
+                .replace(/```(\w+)?\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code style="background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 4px; font-family: Monaco, monospace;">$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function showTyping() {
+            typingIndicator.classList.add('show');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.classList.remove('show');
+        }
+
         function generateResponse(message) {
-            const lowerMessage = message.toLowerCase();
+            const msg = message.toLowerCase();
             
             // Мэндчилгээ
-            if (lowerMessage.includes('сайн') || lowerMessage.includes('байна')) {
-                return "Сайн байна уу! Би код бичих, асуулт хариулах, тайлбарлах зэргээр танд туслах боломжтой. Юугаар туслая вэ?";
+            if (msg.includes('сайн') || msg.includes('байна')) {
+                return 'Сайн байна уу! Би Claude AI туслах систем юм. Код бичих, програмчлалын асуулт хариулах, алгоритм тайлбарлах зэргээр туслаж чадна. Юугаар туслая вэ?';
             }
             
-            // Код асуулт
-            if (lowerMessage.includes('код') || lowerMessage.includes('жишээ') || lowerMessage.includes('бич')) {
-                if (lowerMessage.includes('javascript') || lowerMessage.includes('js')) {
-                    return `JavaScript жишээ код:\n\n\`\`\`javascript\n// Энгийн функц\nfunction greeting(name) {\n    return \`Сайн байна уу, \${name}!\`;\n}\n\n// Ашиглах нь\nconsole.log(greeting("Танай нэр"));\n\`\`\`\n\nТанд өөр ямар код хэрэгтэй вэ?`;
-                } else if (lowerMessage.includes('html')) {
-                    return `HTML жишээ:\n\n\`\`\`html\n<!DOCTYPE html>\n<html>\n<head>\n    <title>Миний вэбсайт</title>\n</head>\n<body>\n    <h1>Сайн байна уу!</h1>\n    <p>Энэ бол миний эхний вэб хуудас.</p>\n</body>\n</html>\n\`\`\``;
-                } else if (lowerMessage.includes('python')) {
-                    return `Python жишээ:\n\n\`\`\`python\n# Энгийн функц\ndef greeting(name):\n    return f"Сайн байна уу, {name}!"\n\n# List-тай ажиллах\nnumbers = [1, 2, 3, 4, 5]\nsquared = [x**2 for x in numbers]\nprint(squared)  # [1, 4, 9, 16, 25]\n\`\`\``;
-                } else {
-                    return "Танд ямар хэлний код хэрэгтэй вэ? JavaScript, Python, HTML, CSS гэх мэт хэлүүдээр жишээ өгч чадна.";
-                }
+            // JavaScript код
+            if (msg.includes('javascript') || msg.includes('js')) {
+                return 'JavaScript жишээ:\n\n```javascript\n// Modern JavaScript функц\nconst fetchData = async (url) => {\n  try {\n    const response = await fetch(url);\n    const data = await response.json();\n    return data;\n  } catch (error) {\n    console.error("Алдаа:", error);\n  }\n};\n\n// Array methods\nconst numbers = [1, 2, 3, 4, 5];\nconst doubled = numbers.map(n => n * 2);\nconst evens = numbers.filter(n => n % 2 === 0);\n\nconsole.log(doubled); // [2, 4, 6, 8, 10]\n```\n\nТанд өөр ямар JavaScript код хэрэгтэй вэ?';
             }
             
-            // Chat app-ын тухай
-            if (lowerMessage.includes('чат') || lowerMessage.includes('chat')) {
-                return "Энэ чат app нь HTML, CSS, JavaScript ашиглан хийгдсэн. Vercel дээр deploy хийж болно. Танд өөр chat функц нэмэхийг хүсч байна уу?";
+            // Python код
+            if (msg.includes('python')) {
+                return 'Python жишээ:\n\n```python\n# Data processing\nimport pandas as pd\nimport numpy as np\n\ndef process_data(filename):\n    # CSV файл унших\n    df = pd.read_csv(filename)\n    \n    # Дата цэвэрлэх\n    df = df.dropna()\n    df["processed"] = df["value"].apply(lambda x: x * 2)\n    \n    return df\n\n# List comprehension\nnumbers = [1, 2, 3, 4, 5]\nsquared = [x**2 for x in numbers if x % 2 == 0]\nprint(squared)  # [4, 16]\n\n# Class жишээ\nclass Calculator:\n    def __init__(self):\n        self.result = 0\n    \n    def add(self, num):\n        self.result += num\n        return self\n```\n\nТанд Python-ээр өөр юу хийх хэрэгтэй вэ?';
             }
             
-            // Тусламж
-            if (lowerMessage.includes('туслах') || lowerMessage.includes('тусла') || lowerMessage.includes('help')) {
-                return "Би танд дараах зүйлээр туслаж чадна:\n• Код бичих (JavaScript, Python, HTML, CSS)\n• Программчлалын асуултад хариулах\n• Алгоритм тайлбарлах\n• Дебаг хийх\n• Шинэ төсөл эхлүүлэх\n\nЮугаар туслая вэ?";
-            }
-            
-            // Программчлалын асуулт
-            if (lowerMessage.includes('яаж') || lowerMessage.includes('хэрхэн')) {
-                if (lowerMessage.includes('сайт') || lowerMessage.includes('вэб')) {
-                    return "Вэб сайт хийх алхмууд:\n1. HTML бүтэц бий болгох\n2. CSS-ээр загвар хийх\n3. JavaScript-ээр динамик функц нэмэх\n4. Server тохируулах (Node.js, Python Flask гэх мэт)\n5. Hosting хийх (Vercel, Netlify гэх мэт)\n\nЯмар төрлийн сайт хийхийг хүсч байна вэ?";
-                } else if (lowerMessage.includes('апп') || lowerMessage.includes('app')) {
-                    return "Мобайл апп хийх сонголт:\n• React Native - JavaScript ашиглан iOS/Android\n• Flutter - Dart хэл ашиглан\n• Swift - iOS апп\n• Kotlin/Java - Android апп\n• Progressive Web App (PWA)\n\nЯмар платформд апп хийхийг хүсч байна вэ?";
-                }
+            // React код
+            if (msg.includes('react')) {
+                return 'React компонент жишээ:\n\n```javascript\nimport React, { useState } from "react";\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n  const [name, setName] = useState("");\n\n  const increment = () => {\n    setCount(count + 1);\n  };\n\n  return (\n    <div className="counter">\n      <h2>Тооллого: {count}</h2>\n      <button onClick={increment}>\n        Нэмэх\n      </button>\n      \n      <input \n        type="text"\n        value={name}\n        onChange={(e) => setName(e.target.value)}\n        placeholder="Нэрээ оруулна уу"\n      />\n      {name && <p>Сайн байна уу, {name}!</p>}\n    </div>\n  );\n}\n\nexport default Counter;\n```\n\nReact Hooks, state management талаар илүү асууж болно!';
             }
             
             // API асуулт
-            if (lowerMessage.includes('api')) {
-                return "API ашиглах жишээ:\n\n\`\`\`javascript\n// Fetch ашиглан API дуудах\nasync function fetchData() {\n    try {\n        const response = await fetch('https://api.example.com/data');\n        const data = await response.json();\n        console.log(data);\n    } catch (error) {\n        console.error('Алдаа:', error);\n    }\n}\n\`\`\`\n\nТанд ямар API-тай ажиллах хэрэгтэй вэ?";
+            if (msg.includes('api')) {
+                return '🔌 API жишээ:\n\n```javascript\n// Modern API client\nclass ApiClient {\n  constructor(baseUrl) {\n    this.baseUrl = baseUrl;\n  }\n\n  async get(endpoint) {\n    const response = await fetch(this.baseUrl + endpoint);\n    if (!response.ok) {\n      throw new Error("API алдаа: " + response.status);\n    }\n    return response.json();\n  }\n\n  async post(endpoint, data) {\n    const response = await fetch(this.baseUrl + endpoint, {\n      method: "POST",\n      headers: {\n        "Content-Type": "application/json"\n      },\n      body: JSON.stringify(data)\n    });\n    return response.json();\n  }\n}\n\n// Ашиглах нь\nconst api = new ApiClient("https://api.example.com");\n\ntry {\n  const users = await api.get("/users");\n  console.log(users);\n} catch (error) {\n  console.error("Алдаа гарлаа:", error);\n}\n```\n\nREST API, GraphQL талаар илүү мэдэхийг хүсэж байна уу?';
+            }
+            
+            // Веб хөгжүүлэлт
+            if (msg.includes('сайт') || msg.includes('веб')) {
+                return '🌐 Веб хөгжүүлэлтийн зөвлөгөө:\n\n**Frontend технологи:**\n• HTML5, CSS3 (Flexbox, Grid)\n• JavaScript ES6+\n• React.js эсвэл Vue.js\n• TypeScript (илүү найдвартай код)\n\n**Backend сонголтууд:**\n• Node.js + Express\n• Python + Django/Flask\n• Database: MongoDB эсвэл PostgreSQL\n\n**Deployment:**\n• Frontend: Vercel, Netlify\n• Backend: Railway, Render\n• Domain: Namecheap\n\n**Алхам алхмын процесс:**\n1. Дизайн хийх (Figma)\n2. HTML/CSS суурь бүтэц\n3. JavaScript интерактив функц\n4. Backend API холбох\n5. Database холбох\n6. Deploy хийх\n\nТанд ямар хэсгээр илүү туслах вэ?';
             }
             
             // Ерөнхий хариулт
             const responses = [
-                "Сонирхолтой асуулт! Илүү дэлгэрэнгүй тайлбарлаж болох уу?",
-                "Энэ сэдвээр илүү дэлгэрэнгүй ярилцъя. Танд яг юу хэрэгтэй вэ?",
-                "Ойлголоо! Танд энэ талаар илүү тодорхой мэдээлэл өгөхийг хүсч байна уу?",
-                "Зөв асуулт! Би танд энэ асуудлаар туслахад бэлэн байна.",
-                "Энэ талаар илүү ярилцъя! Танд ямар туслалцаа хэрэгтэй вэ?"
+                'Сонирхолтой асуулт! Илүү дэлгэрэнгүй тайлбарлаж болох уу?',
+                'Энэ сэдвээр илүү ярилцъя. Танд яг юу хэрэгтэй вэ?',
+                'Ойлголоо! Танд энэ талаар илүү тусламж хэрэгтэй юу?',
+                'Зөв асуулт байна! Би танд энэ асуудлаар туслахад бэлэн.',
+                'Энэ талаар маш их зүйл ярилцаж болно. Эхлээд юунаас эхэлье вэ?'
             ];
             
             return responses[Math.floor(Math.random() * responses.length)];
         }
 
-        // Мессеж нэмэх функц
-        function addMessage(content, sender, isError = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message${isError ? ' error-message' : ''}`;
-            messageDiv.textContent = content;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Typing indicator харуулах
-        function showTypingIndicator() {
-            typingIndicator.style.display = 'block';
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Typing indicator нуух
-        function hideTypingIndicator() {
-            typingIndicator.style.display = 'none';
+        function clearChat() {
+            if (confirm('Чатыг цэвэрлэх үү?')) {
+                messagesContainer.innerHTML = '';
+                addMessage('Сайн байна уу! Шинэ чат эхэллээ. Танд хэрхэн туслах вэ?', 'bot');
+            }
         }
 
         // Хуудас ачааллагдахад input дээр focus хийх
         window.addEventListener('load', function() {
             messageInput.focus();
+            console.log('🚀 Advanced Chat система амжилттай ачааллагдлаа!');
         });
     </script>
 </body>
