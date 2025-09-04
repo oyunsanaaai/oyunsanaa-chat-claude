@@ -977,8 +977,19 @@
             </button>
         </div>
     </div>
-
-    <div class="sub-menu" id="backgroundMenu">
+<div class="sub-menu" id="backgroundMenu">
+        <div class="sub-menu-header">
+            <button class="back-to-menu" onclick="backToSettings()">←</button>
+            <h3 class="sub-menu-title">Арын зураг</h3>
+        </div>
+        <div class="upload-area" onclick="document.getElementById('bgUpload').click()">
+            <div class="upload-text">📷 Зураг сонгох</div>
+            <input type="file" id="bgUpload" accept="image/*" onchange="changeBackground(this)">
+        </div>
+        <button onclick="removeBackground()" style="width: 100%; padding: 15px; background: rgba(255,255,255,0.3); border: none; border-radius: 15px; color: #8B7461; cursor: pointer; font-family: 'Forum', serif; margin-top: 15px; transition: all 0.3s ease;">
+            🗑️ Арын зураг арилгах
+        </button>
+    </div>    <div class="sub-menu" id="backgroundMenu">
         <div class="sub-menu-header">
             <button class="back-to-menu" onclick="backToSettings()">←</button>
             <h3 class="sub-menu-title">Арын зураг</h3>
@@ -1124,41 +1135,48 @@
         }
 
         function changeColor(color, button) {
-            const appContainer = document.querySelector('.app-container');
-            const chatScreen = document.getElementById('chatScreen');
-            const bodyElement = document.body;
-            
-            if (colorThemes[color]) {
-                appContainer.style.background = colorThemes[color].background;
-                chatScreen.style.background = colorThemes[color].background;
-                bodyElement.style.background = colorThemes[color].body;
-                
-                console.log('Color changed to:', color);
-            } else {
-                console.error('Color theme not found:', color);
-            }
-            
-            document.querySelectorAll('.color-option').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (button) {
-                button.classList.add('active');
-            }
+    const appContainer = document.querySelector('.app-container');
+    const chatScreen = document.getElementById('chatScreen');
+    const bodyElement = document.body;
+    
+    if (colorThemes[color]) {
+        // Зөвхөн gradient өнгийг солих, зургийг хадгалах
+        appContainer.style.background = colorThemes[color].background;
+        chatScreen.style.background = colorThemes[color].background;
+        bodyElement.style.background = colorThemes[color].body;
+        
+        // Background зургийн opacity-г хадгалах
+        const overlay = document.getElementById('backgroundOverlay');
+        if (overlay.style.backgroundImage && overlay.style.backgroundImage !== 'none') {
+            // Зураг байгаа тохиолдолд зүгээр л gradient өөрчилөх
+            console.log('Зураг хадгалагдсан, зөвхөн өнгө солигдлоо:', color);
+        } else {
+            console.log('Зураг байхгүй, өнгө солигдлоо:', color);
         }
-
+    } else {
+        console.error('Color theme not found:', color);
+    }
+    
+    document.querySelectorAll('.color-option').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (button) {
+        button.classList.add('active');
+    }
+}
         function changeBackground(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const overlay = document.getElementById('backgroundOverlay');
-                    overlay.style.backgroundImage = `url(${e.target.result})`;
-                    overlay.style.opacity = '0.8';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const overlay = document.getElementById('backgroundOverlay');
+            overlay.style.backgroundImage = `url(${e.target.result})`;
+            overlay.style.opacity = '0.6';
+            console.log('Арын зураг солигдлоо');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
         function changeLogo(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
