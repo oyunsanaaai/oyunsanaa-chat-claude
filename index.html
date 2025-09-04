@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Монгол Апп</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Caudex:ital,wght@0,400;0,700;1,400;1,700&family=Forum&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,8 +14,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
+            font-family: 'Forum', serif;
+            background: linear-gradient(135deg, #22495A, #486573, #D8C7BD);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -21,9 +23,8 @@
         .app-container {
             width: 100%;
             min-height: 100vh;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
+            background: linear-gradient(135deg, #22495A, #486573);
             position: relative;
-            backdrop-filter: blur(20px);
         }
 
         .background-overlay {
@@ -42,7 +43,7 @@
         .app-content {
             position: relative;
             z-index: 2;
-            padding: 40px 60px;
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -50,189 +51,297 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 25px 40px;
-            border-radius: 30px;
+            margin-bottom: 20px;
+            background: rgba(244, 239, 235, 0.12);
+            padding: 15px;
+            border-radius: 25px;
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(212, 199, 189, 0.15);
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 25px;
+            width: 60px;
+            height: 60px;
+            background: rgba(244, 239, 235, 0.2);
+            border: 1px solid rgba(212, 199, 189, 0.3);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: white;
+            font-family: 'Caudex', serif;
+            font-weight: 400;
+            color: #F4EFEB;
             backdrop-filter: blur(10px);
-            font-size: 18px;
+            font-size: 16px;
             text-align: center;
             overflow: hidden;
+            order: 1;
         }
 
         .logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 25px;
+            border-radius: 20px;
         }
 
-        /* Header Actions */
-        .header-actions {
+        .header-chats {
             display: flex;
-            gap: 25px;
+            gap: 12px;
+            order: 2;
+            width: 100%;
+            justify-content: center;
         }
 
-        .header-btn {
-            padding: 18px 30px;
+        .header-chat-btn {
+            padding: 15px 20px;
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             backdrop-filter: blur(15px);
             cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
+            font-family: 'Caudex', serif;
+            font-size: 14px;
+            font-weight: 400;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.25);
-            color: white;
+            gap: 8px;
+            flex: 1;
+            max-width: 140px;
+            justify-content: center;
+            color: #F4EFEB;
         }
 
-        .header-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-            background: rgba(255, 255, 255, 0.35);
+        .header-chat-btn.primary {
+            background: rgba(34, 73, 90, 0.4);
+            border: 1px solid rgba(212, 199, 189, 0.3);
+        }
+
+        .header-chat-btn.game {
+            background: rgba(72, 101, 115, 0.4);
+            border: 1px solid rgba(244, 239, 235, 0.3);
+        }
+
+        .header-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 73, 90, 0.3);
+            background: rgba(212, 199, 189, 0.25);
         }
 
         .menu-btn {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.25);
-            border: none;
-            border-radius: 25px;
+            width: 60px;
+            height: 60px;
+            background: rgba(244, 239, 235, 0.2);
+            border: 1px solid rgba(212, 199, 189, 0.3);
+            border-radius: 20px;
             backdrop-filter: blur(10px);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            color: white;
+            font-size: 20px;
+            color: #F4EFEB;
             transition: all 0.3s ease;
+            order: 3;
         }
 
         .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(212, 199, 189, 0.3);
             transform: scale(1.05);
         }
 
-        /* Title */
         .title {
             text-align: center;
-            color: white;
-            margin-bottom: 50px;
+            color: #F4EFEB;
+            margin-bottom: 20px;
         }
 
         .title h1 {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: 'Caudex', serif;
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .title p {
-            font-size: 24px;
+            font-family: 'Forum', serif;
+            font-size: 14px;
             opacity: 0.9;
-            font-weight: 500;
+            font-weight: 400;
         }
 
-        /* Menu Grid - Responsive */
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(100px, auto);
+            gap: 10px;
+            margin-bottom: 100px;
+            padding: 10px;
         }
 
         .menu-item {
             aspect-ratio: 1;
             border: none;
-            border-radius: 30px;
+            border-radius: 20px;
             backdrop-filter: blur(15px);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
+            font-family: 'Forum', serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: #F4EFEB;
             text-align: center;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(212, 199, 189, 0.15);
+            border: 1px solid rgba(244, 239, 235, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:nth-child(odd) {
+            background: rgba(34, 73, 90, 0.3);
+            border: 1px solid rgba(72, 101, 115, 0.2);
+        }
+
+        .menu-item:nth-child(even) {
+            background: rgba(72, 101, 115, 0.25);
+            border: 1px solid rgba(212, 199, 189, 0.15);
         }
 
         .menu-item:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px) scale(1.02);
+            background: rgba(244, 239, 235, 0.25);
+            box-shadow: 0 6px 15px rgba(34, 73, 90, 0.2);
         }
 
         .menu-item .icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            font-size: 28px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
         }
 
-        /* Bottom Navigation - Fixed */
+        .menu-item.expanded {
+            grid-column: span 2;
+            grid-row: span 2;
+            font-size: 14px;
+            z-index: 5;
+            background: rgba(244, 239, 235, 0.2);
+            border: 2px solid rgba(212, 199, 189, 0.3);
+        }
+
+        .menu-item.expanded::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(34, 73, 90, 0.1), rgba(72, 101, 115, 0.05));
+            z-index: -1;
+        }
+
+        .menu-item.expanded .icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .menu-item.expanded .widget-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            font-family: 'Forum', serif;
+            font-size: 10px;
+            color: #D8C7BD;
+            opacity: 0.9;
+            line-height: 1.3;
+        }
+
+        .widget-info {
+            display: none;
+        }
+
+        .menu-item.expanded .widget-info {
+            display: block;
+        }
+
+        .resize-handle {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 15px;
+            height: 15px;
+            background: rgba(244, 239, 235, 0.3);
+            border-radius: 3px;
+            cursor: se-resize;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-item:hover .resize-handle {
+            opacity: 1;
+        }
+
+        .resize-handle::after {
+            content: '⋯';
+            position: absolute;
+            top: -2px;
+            left: 1px;
+            font-size: 8px;
+            color: #F4EFEB;
+            transform: rotate(45deg);
+        }
+
         .bottom-nav {
             position: fixed;
-            bottom: 30px;
+            bottom: 15px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(34, 73, 90, 0.3);
             backdrop-filter: blur(25px);
-            padding: 20px 40px;
+            padding: 12px 20px;
             border-radius: 35px;
             display: flex;
-            gap: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            gap: 15px;
+            border: 1px solid rgba(212, 199, 189, 0.15);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
         .nav-btn {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.15);
+            width: 50px;
+            height: 50px;
+            background: rgba(244, 239, 235, 0.15);
             border: none;
-            border-radius: 20px;
+            border-radius: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            color: white;
+            font-size: 18px;
+            color: #F4EFEB;
             transition: all 0.3s ease;
         }
 
         .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.15);
+            background: rgba(212, 199, 189, 0.3);
+            transform: scale(1.1);
         }
 
-        /* Overlay for all popups */
         .overlay {
             position: fixed;
             top: 0;
@@ -252,7 +361,6 @@
             visibility: visible;
         }
 
-        /* Settings Menu from Menu */
         .settings-menu {
             position: fixed;
             top: 50%;
@@ -260,10 +368,10 @@
             transform: translate(-50%, -50%) scale(0.9);
             width: 90%;
             max-width: 400px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(244, 239, 235, 0.95);
             backdrop-filter: blur(30px);
             border-radius: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(34, 73, 90, 0.3);
             transition: all 0.3s ease;
             z-index: 1000;
             padding: 30px;
@@ -281,13 +389,14 @@
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(34, 73, 90, 0.1);
         }
 
         .settings-header h2 {
+            font-family: 'Caudex', serif;
             font-size: 24px;
-            color: #374151;
-            font-weight: 700;
+            color: #22495A;
+            font-weight: 400;
             margin-bottom: 5px;
         }
 
@@ -300,7 +409,7 @@
             background: transparent;
             border: none;
             font-size: 20px;
-            color: #6b7280;
+            color: #486573;
             cursor: pointer;
             border-radius: 50%;
             display: flex;
@@ -310,10 +419,9 @@
         }
 
         .close-settings:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(34, 73, 90, 0.1);
         }
 
-        /* Menu Options */
         .menu-options {
             display: flex;
             flex-direction: column;
@@ -323,7 +431,6 @@
         .menu-option {
             width: 100%;
             padding: 20px;
-            background: rgba(0, 0, 0, 0.05);
             border: none;
             border-radius: 15px;
             cursor: pointer;
@@ -331,15 +438,62 @@
             align-items: center;
             gap: 15px;
             text-align: left;
+            font-family: 'Forum', serif;
             font-size: 16px;
-            font-weight: 500;
-            color: #374151;
+            font-weight: 400;
+            color: #22495A;
             transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .menu-option.background {
+            background: rgba(72, 101, 115, 0.08);
+            border: 1px solid rgba(72, 101, 115, 0.15);
+        }
+
+        .menu-option.colors {
+            background: rgba(212, 199, 189, 0.08);
+            border: 1px solid rgba(212, 199, 189, 0.15);
+        }
+
+        .menu-option.logo {
+            background: rgba(34, 73, 90, 0.08);
+            border: 1px solid rgba(34, 73, 90, 0.15);
+        }
+
+        .menu-option.profile {
+            background: rgba(244, 239, 235, 0.08);
+            border: 1px solid rgba(244, 239, 235, 0.15);
+        }
+
+        .menu-option.settings {
+            background: rgba(180, 169, 162, 0.08);
+            border: 1px solid rgba(180, 169, 162, 0.15);
         }
 
         .menu-option:hover {
-            background: rgba(0, 0, 0, 0.1);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 73, 90, 0.08);
+        }
+
+        .menu-option.background:hover {
+            background: rgba(72, 101, 115, 0.12);
+        }
+
+        .menu-option.colors:hover {
+            background: rgba(212, 199, 189, 0.12);
+        }
+
+        .menu-option.logo:hover {
+            background: rgba(34, 73, 90, 0.12);
+        }
+
+        .menu-option.profile:hover {
+            background: rgba(244, 239, 235, 0.12);
+        }
+
+        .menu-option.settings:hover {
+            background: rgba(180, 169, 162, 0.12);
         }
 
         .menu-option .icon {
@@ -348,7 +502,6 @@
             text-align: center;
         }
 
-        /* Sub Menus */
         .sub-menu {
             position: fixed;
             top: 50%;
@@ -357,10 +510,10 @@
             width: 90%;
             max-width: 450px;
             max-height: 80vh;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(244, 239, 235, 0.95);
             backdrop-filter: blur(30px);
             border-radius: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 60px rgba(34, 73, 90, 0.3);
             transition: all 0.3s ease;
             z-index: 1001;
             padding: 30px;
@@ -381,13 +534,13 @@
             gap: 15px;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(34, 73, 90, 0.1);
         }
 
         .back-to-menu {
             width: 35px;
             height: 35px;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(34, 73, 90, 0.1);
             border: none;
             border-radius: 50%;
             cursor: pointer;
@@ -395,29 +548,30 @@
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            color: #374151;
+            color: #22495A;
         }
 
         .sub-menu-title {
+            font-family: 'Caudex', serif;
             font-size: 20px;
-            font-weight: 600;
-            color: #374151;
+            font-weight: 400;
+            color: #22495A;
         }
 
         .upload-area {
             padding: 25px;
-            border: 2px dashed #d1d5db;
+            border: 2px dashed #D8C7BD;
             border-radius: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.02);
+            background: rgba(34, 73, 90, 0.02);
             margin-bottom: 20px;
         }
 
         .upload-area:hover {
-            border-color: #10b981;
-            background: rgba(16, 185, 129, 0.05);
+            border-color: #22495A;
+            background: rgba(34, 73, 90, 0.05);
         }
 
         .upload-area input {
@@ -425,15 +579,16 @@
         }
 
         .upload-text {
-            color: #6b7280;
+            color: #486573;
+            font-family: 'Forum', serif;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 400;
         }
 
         .color-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
             margin-bottom: 20px;
         }
 
@@ -445,7 +600,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border: 3px solid transparent;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(34, 73, 90, 0.15);
         }
 
         .color-option:hover {
@@ -453,101 +608,26 @@
         }
 
         .color-option.active {
-            border-color: #374151;
+            border-color: #22495A;
             transform: scale(1.05);
         }
 
-        .color-option.green { background: linear-gradient(135deg, #10b981, #34d399); }
-        .color-option.blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-        .color-option.purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-        .color-option.pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
-        .color-option.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+        .color-option.green { background: #22495A; }
+        .color-option.blue { background: #6ba3d6; }
+        .color-option.purple { background: #b19cd9; }
+        .color-option.pink { background: #deb887; }
+        .color-option.orange { background: #cd853f; }
+        .color-option.beige { background: #d2b48c; }
+        .color-option.sage { background: #9caf88; }
+        .color-option.dusty { background: #b8a9a2; }
 
-        /* Chat Selection from Bottom */
-        .chat-selection {
-            position: fixed;
-            bottom: -100vh;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(30px);
-            border-radius: 25px 25px 0 0;
-            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease;
-            z-index: 1000;
-            padding: 30px;
-        }
-
-        .chat-selection.open {
-            bottom: 0;
-        }
-
-        .chat-selection-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .drag-handle {
-            width: 40px;
-            height: 4px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 2px;
-            margin: 0 auto 20px;
-        }
-
-        .chat-selection h3 {
-            font-size: 20px;
-            color: #374151;
-            font-weight: 600;
-        }
-
-        .chat-options {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .chat-option {
-            width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 18px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .chat-option.primary {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border: 2px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .chat-option.game {
-            background: linear-gradient(135deg, #ec4899, #f472b6);
-            color: white;
-            border: 2px solid transparent;
-        }
-
-        .chat-option:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Chat Screen */
         .chat-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #10b981, #3b82f6);
+            background: linear-gradient(135deg, #22495A, #486573);
             z-index: 2000;
             transform: translateY(100%);
             transition: transform 0.4s ease;
@@ -560,125 +640,127 @@
         }
 
         .chat-header {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(244, 239, 235, 0.2);
             backdrop-filter: blur(20px);
-            padding: 40px 50px;
+            padding: 50px 25px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(212, 199, 189, 0.2);
         }
 
         .back-btn {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 255, 255, 0.2);
+            width: 45px;
+            height: 45px;
+            background: rgba(244, 239, 235, 0.2);
             border: none;
-            border-radius: 25px;
+            border-radius: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 32px;
+            color: #F4EFEB;
+            font-size: 20px;
             font-weight: bold;
         }
 
         .chat-title {
-            color: white;
-            font-size: 32px;
-            font-weight: 600;
+            color: #F4EFEB;
+            font-family: 'Caudex', serif;
+            font-size: 18px;
+            font-weight: 400;
         }
 
         .chat-messages {
             flex-grow: 1;
-            padding: 40px 50px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            max-width: 1200px;
+            gap: 15px;
+            max-width: 600px;
             margin: 0 auto;
             width: 100%;
         }
 
         .message {
-            padding: 20px 30px;
-            border-radius: 30px;
-            max-width: 60%;
-            font-size: 18px;
-            line-height: 1.5;
+            padding: 12px 16px;
+            border-radius: 20px;
+            max-width: 70%;
+            font-family: 'Forum', serif;
+            font-size: 14px;
+            line-height: 1.4;
             backdrop-filter: blur(10px);
-            position: relative;
         }
 
         .message.sent {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(244, 239, 235, 0.3);
             margin-left: auto;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #F4EFEB;
+            border: 1px solid rgba(212, 199, 189, 0.2);
         }
 
         .message.received {
-            background: rgba(255, 255, 255, 0.9);
-            color: #374151;
+            background: rgba(244, 239, 235, 0.9);
+            color: #22495A;
         }
 
         .message img {
-            max-width: 300px;
-            max-height: 300px;
-            border-radius: 20px;
-            margin-top: 15px;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            margin-top: 8px;
             display: block;
         }
 
         .chat-input-area {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(244, 239, 235, 0.2);
             backdrop-filter: blur(20px);
-            padding: 40px 50px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 15px;
+            border-top: 1px solid rgba(212, 199, 189, 0.2);
         }
 
         .input-row {
             display: flex;
-            gap: 20px;
-            max-width: 1200px;
+            gap: 12px;
+            max-width: 600px;
             margin: 0 auto;
             width: 100%;
         }
 
         .message-input {
             flex-grow: 1;
-            padding: 20px 30px;
+            padding: 12px 16px;
             border: none;
-            border-radius: 35px;
-            background: rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(244, 239, 235, 0.3);
             backdrop-filter: blur(10px);
             outline: none;
-            color: white;
-            font-size: 18px;
+            color: #F4EFEB;
+            font-family: 'Forum', serif;
+            font-size: 14px;
         }
 
         .message-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(244, 239, 235, 0.7);
         }
 
         .input-buttons {
             display: flex;
-            gap: 15px;
+            gap: 10px;
         }
 
         .image-btn, .send-btn {
-            width: 70px;
-            height: 70px;
+            width: 45px;
+            height: 45px;
             border: none;
             border-radius: 50%;
-            color: white;
+            color: #F4EFEB;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 16px;
             font-weight: bold;
             transition: all 0.3s ease;
             display: flex;
@@ -687,16 +769,16 @@
         }
 
         .image-btn {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(244, 239, 235, 0.25);
         }
 
         .send-btn {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(244, 239, 235, 0.3);
         }
 
         .image-btn:hover, .send-btn:hover {
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
+            background: rgba(212, 199, 189, 0.5);
+            transform: scale(1.05);
         }
 
         #imageUpload {
@@ -704,64 +786,16 @@
         }
 
         .image-preview {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 20px;
-            margin: 15px auto;
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 12px;
+            margin: 10px auto;
             cursor: pointer;
             display: block;
         }
 
         #imagePreview {
             text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .app-content {
-                padding: 20px;
-            }
-            
-            .header {
-                padding: 20px;
-                flex-direction: column;
-                gap: 20px;
-            }
-            
-            .header-actions {
-                flex-direction: column;
-                gap: 15px;
-                width: 100%;
-            }
-            
-            .header-btn {
-                justify-content: center;
-            }
-            
-            .title h1 {
-                font-size: 32px;
-            }
-            
-            .title p {
-                font-size: 18px;
-            }
-            
-            .menu-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-            
-            .bottom-nav {
-                bottom: 20px;
-                padding: 15px 25px;
-                gap: 20px;
-            }
-            
-            .nav-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
         }
     </style>
 </head>
@@ -770,62 +804,150 @@
         <div class="background-overlay" id="backgroundOverlay"></div>
         
         <div class="app-content">
-            <!-- Header -->
             <div class="header">
                 <div class="logo" id="logoDisplay">ЛОГО</div>
                 
-                <div class="header-actions">
-                    <button class="header-btn" onclick="openChatSelection()">
+                <div class="header-chats">
+                    <button class="header-chat-btn primary" onclick="openChat('regular')">
                         <span>💬</span>
-                        <span>Чат</span>
+                        <span>Миний чат</span>
+                    </button>
+                    <button class="header-chat-btn game" onclick="openChat('game')">
+                        <span>🎮</span>
+                        <span>Ойунсана чат</span>
                     </button>
                 </div>
                 
                 <button class="menu-btn" onclick="openSettings()">☰</button>
             </div>
 
-            <!-- Title -->
             <div class="title">
                 <h1>МОНГОЛ АПП</h1>
                 <p>18 цэстэй • 2 чат • Зураг илгээх</p>
             </div>
 
-            <!-- Menu Grid -->
             <div class="menu-grid">
-                <button class="menu-item"><div class="icon">📷</div><div>Камер</div></button>
-                <button class="menu-item"><div class="icon">🎵</div><div>Хөгжим</div></button>
-                <button class="menu-item"><div class="icon">📚</div><div>Ном</div></button>
-                <button class="menu-item"><div class="icon">☕</div><div>Кафе</div></button>
-                <button class="menu-item"><div class="icon">🎮</div><div>Тоглоом</div></button>
-                <button class="menu-item"><div class="icon">📍</div><div>Газрын зураг</div></button>
-                <button class="menu-item"><div class="icon">🛍️</div><div>Дэлгүүр</div></button>
-                <button class="menu-item"><div class="icon">🚗</div><div>Тээвэр</div></button>
-                <button class="menu-item"><div class="icon">✈️</div><div>Аялал</div></button>
-                <button class="menu-item"><div class="icon">📞</div><div>Утас</div></button>
-                <button class="menu-item"><div class="icon">📧</div><div>И-мэйл</div></button>
-                <button class="menu-item"><div class="icon">📅</div><div>Календар</div></button>
-                <button class="menu-item"><div class="icon">⏰</div><div>Цаг</div></button>
-                <button class="menu-item"><div class="icon">⭐</div><div>Од</div></button>
-                <button class="menu-item"><div class="icon">❤️</div><div>Дуртай</div></button>
-                <button class="menu-item"><div class="icon">⚙️</div><div>Тохиргоо</div></button>
-                <button class="menu-item"><div class="icon">👤</div><div>Профайл</div></button>
-                <button class="menu-item"><div class="icon">📊</div><div>Бусад</div></button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📷</div>
+                    <div>Камер</div>
+                    <div class="widget-info">Шинэ зураг авах<br/>Портрет режим</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">🎵</div>
+                    <div>Хөгжим</div>
+                    <div class="widget-info">Сүүлийн дуу:<br/>"Миний дурлагч"</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📚</div>
+                    <div>Ном</div>
+                    <div class="widget-info">Уншиж байгаа:<br/>"Монголын түүх"</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">☕</div>
+                    <div>Кафе</div>
+                    <div class="widget-info">Хамгийн ойрын:<br/>Starbucks 2км</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">🎮</div>
+                    <div>Тоглоом</div>
+                    <div class="widget-info">Сүүлд тоглож:<br/>Puzzle Game</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📍</div>
+                    <div>Газрын зураг</div>
+                    <div class="widget-info">Одоогийн байрлал:<br/>Улаанбаатар</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">🛍️</div>
+                    <div>Дэлгүүр</div>
+                    <div class="widget-info">Сүүлийн захиалга:<br/>Хоол хүнс</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">🚗</div>
+                    <div>Тээвэр</div>
+                    <div class="widget-info">Дараагийн автобус:<br/>15 минутын дараа</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">✈️</div>
+                    <div>Аялал</div>
+                    <div class="widget-info">Дараагийн аялал:<br/>Хөвсгөл нуур</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📞</div>
+                    <div>Утас</div>
+                    <div class="widget-info">Сүүлийн дуудлага:<br/>Ээж (2 минут)</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📧</div>
+                    <div>И-мэйл</div>
+                    <div class="widget-info">Шинэ мэйл:<br/>3 уншаагүй</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📅</div>
+                    <div>Календар</div>
+                    <div class="widget-info">Өнөөдөр:<br/>2 уулзалт</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">⏰</div>
+                    <div>Цаг</div>
+                    <div class="widget-info">Дараагийн сэрүүлэг:<br/>07:30 AM</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">⭐</div>
+                    <div>Од</div>
+                    <div class="widget-info">Өнөөдрийн:<br/>Гоё өдөр байна</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">❤️</div>
+                    <div>Дуртай</div>
+                    <div class="widget-info">Дуртай зүйлс:<br/>5 шинэ нэмэгдсэн</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">⚙️</div>
+                    <div>Тохиргоо</div>
+                    <div class="widget-info">Системийн:<br/>Шинэчлэл байна</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">👤</div>
+                    <div>Профайл</div>
+                    <div class="widget-info">Таны профайл:<br/>90% бүрэн</div>
+                    <div class="resize-handle"></div>
+                </button>
+                <button class="menu-item" onclick="toggleExpand(this)">
+                    <div class="icon">📊</div>
+                    <div>Бусад</div>
+                    <div class="widget-info">Статистик:<br/>Өндөр түвшин</div>
+                    <div class="resize-handle"></div>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <button class="nav-btn">🏠</button>
         <button class="nav-btn">🔍</button>
-        <button class="nav-btn" onclick="openChatSelection()">💬</button>
+        <button class="nav-btn" onclick="openChat('regular')">💬</button>
         <button class="nav-btn">👤</button>
     </div>
 
-    <!-- Overlay -->
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
-    <!-- Settings Menu -->
     <div class="settings-menu" id="settingsMenu">
         <button class="close-settings" onclick="closeAll()">✕</button>
         <div class="settings-header">
@@ -833,30 +955,29 @@
         </div>
         
         <div class="menu-options">
-            <button class="menu-option" onclick="openSubMenu('background')">
+            <button class="menu-option background" onclick="openSubMenu('background')">
                 <span class="icon">🖼️</span>
                 <span>Арын зураг</span>
             </button>
-            <button class="menu-option" onclick="openSubMenu('colors')">
+            <button class="menu-option colors" onclick="openSubMenu('colors')">
                 <span class="icon">🎨</span>
                 <span>Өнгө солих</span>
             </button>
-            <button class="menu-option" onclick="openSubMenu('logo')">
+            <button class="menu-option logo" onclick="openSubMenu('logo')">
                 <span class="icon">📷</span>
                 <span>Лого</span>
             </button>
-            <button class="menu-option">
+            <button class="menu-option profile">
                 <span class="icon">👤</span>
                 <span>Бүртгэл танилцуулга</span>
             </button>
-            <button class="menu-option">
+            <button class="menu-option settings">
                 <span class="icon">⚙️</span>
                 <span>Үйлчилгээ тохиргоо</span>
             </button>
         </div>
     </div>
 
-    <!-- Sub Menus -->
     <div class="sub-menu" id="backgroundMenu">
         <div class="sub-menu-header">
             <button class="back-to-menu" onclick="backToSettings()">←</button>
@@ -879,6 +1000,9 @@
             <button class="color-option purple" onclick="changeColor('purple', this)"></button>
             <button class="color-option pink" onclick="changeColor('pink', this)"></button>
             <button class="color-option orange" onclick="changeColor('orange', this)"></button>
+            <button class="color-option beige" onclick="changeColor('beige', this)"></button>
+            <button class="color-option sage" onclick="changeColor('sage', this)"></button>
+            <button class="color-option dusty" onclick="changeColor('dusty', this)"></button>
         </div>
     </div>
 
@@ -893,31 +1017,11 @@
         </div>
     </div>
 
-    <!-- Chat Selection -->
-    <div class="chat-selection" id="chatSelection">
-        <div class="chat-selection-header">
-            <div class="drag-handle"></div>
-            <h3>Чат сонгох</h3>
-        </div>
-        
-        <div class="chat-options">
-            <button class="chat-option primary" onclick="openChat('regular')">
-                <span>💬</span>
-                <span>Миний чат</span>
-            </button>
-            <button class="chat-option game" onclick="openChat('game')">
-                <span>🎮</span>
-                <span>Ойунсана чат</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Chat Screen -->
     <div class="chat-screen" id="chatScreen">
         <div class="chat-header">
             <button class="back-btn" onclick="closeChat()">←</button>
             <h2 class="chat-title" id="chatTitle">Миний чат</h2>
-            <div style="width: 70px;"></div>
+            <div style="width: 45px;"></div>
         </div>
         
         <div class="chat-messages" id="chatMessages">
@@ -940,16 +1044,42 @@
 
     <script>
         const colorThemes = {
-            green: 'linear-gradient(135deg, #10b981, #3b82f6)',
-            blue: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
-            purple: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
-            pink: 'linear-gradient(135deg, #ec4899, #f472b6)',
-            orange: 'linear-gradient(135deg, #f59e0b, #fbbf24)'
+            green: {
+                background: 'linear-gradient(135deg, #22495A, #486573)',
+                body: 'linear-gradient(135deg, #22495A, #486573, #D8C7BD)'
+            },
+            blue: {
+                background: 'linear-gradient(135deg, #6ba3d6, #87ceeb)',
+                body: 'linear-gradient(135deg, #6ba3d6, #87ceeb, #b0c4de)'
+            },
+            purple: {
+                background: 'linear-gradient(135deg, #b19cd9, #c8a2c8)',
+                body: 'linear-gradient(135deg, #b19cd9, #c8a2c8, #dda0dd)'
+            },
+            pink: {
+                background: 'linear-gradient(135deg, #deb887, #f5deb3)',
+                body: 'linear-gradient(135deg, #deb887, #f5deb3, #ffe4e1)'
+            },
+            orange: {
+                background: 'linear-gradient(135deg, #cd853f, #daa520)',
+                body: 'linear-gradient(135deg, #cd853f, #daa520, #f4a460)'
+            },
+            beige: {
+                background: 'linear-gradient(135deg, #d2b48c, #f5deb3)',
+                body: 'linear-gradient(135deg, #d2b48c, #f5deb3, #faf0e6)'
+            },
+            sage: {
+                background: 'linear-gradient(135deg, #9caf88, #a8b99c)',
+                body: 'linear-gradient(135deg, #9caf88, #a8b99c, #c9d1c8)'
+            },
+            dusty: {
+                background: 'linear-gradient(135deg, #b8a9a2, #c4b5ae)',
+                body: 'linear-gradient(135deg, #b8a9a2, #c4b5ae, #d3c7c3)'
+            }
         };
 
         let selectedImage = null;
 
-        // Settings Menu Functions
         function openSettings() {
             document.getElementById('overlay').classList.add('open');
             document.getElementById('settingsMenu').classList.add('open');
@@ -958,87 +1088,63 @@
         function closeAll() {
             document.getElementById('overlay').classList.remove('open');
             document.getElementById('settingsMenu').classList.remove('open');
-            document.getElementById('chatSelection').classList.remove('open');
             
-            // Close all sub menus
             document.querySelectorAll('.sub-menu').forEach(menu => {
                 menu.classList.remove('open');
             });
         }
 
         function openSubMenu(menuName) {
-            // Hide main settings menu
             document.getElementById('settingsMenu').classList.remove('open');
-            
-            // Show specific sub menu
             document.getElementById(menuName + 'Menu').classList.add('open');
         }
 
         function backToSettings() {
-            // Hide all sub menus
             document.querySelectorAll('.sub-menu').forEach(menu => {
                 menu.classList.remove('open');
             });
-            
-            // Show main settings menu
             document.getElementById('settingsMenu').classList.add('open');
         }
 
-        // Chat Functions
-        function openChatSelection() {
-            document.getElementById('overlay').classList.add('open');
-            document.getElementById('chatSelection').classList.add('open');
+        function toggleExpand(element) {
+            document.querySelectorAll('.menu-item.expanded').forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('expanded');
+                }
+            });
+            
+            element.classList.toggle('expanded');
+            
+            setTimeout(() => {
+                element.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 100);
         }
 
-        function openChat(type) {
-            const chatScreen = document.getElementById('chatScreen');
-            const chatTitle = document.getElementById('chatTitle');
-            const chatMessages = document.getElementById('chatMessages');
-            
-            // Close chat selection
-            closeAll();
-            
-            chatTitle.textContent = type === 'game' ? 'Ойунсана чат' : 'Миний чат';
-            
-            if (type === 'game') {
-                chatMessages.innerHTML = `
-                    <div class="message received">
-                        Тоглоом эхлүүлэх үү? 🎮
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjgwIiBmaWxsPSIjOGI1Y2Y2Ii8+CiAgPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0OCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfjq48L3RleHQ+Cjwvc3ZnPg==" alt="Тоглоом">
-                    </div>
-                    <div class="message sent">Тийм ээ, эхлүүлье!</div>
-                    <div class="message received">Ямар тоглоом дуртай вэ?</div>
-                `;
-            } else {
-                chatMessages.innerHTML = `
-                    <div class="message received">Сайн байна уу!</div>
-                    <div class="message sent">Сайн байна, та яаж байна?</div>
-                    <div class="message received">
-                        Маш сайн байна! Зураг илгээж үзэх үү?
-                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzEwYjk4MSIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4yHIFppcmFnPC90ZXh0Pgo8L3N2Zz4=" alt="Жишээ зураг">
-                    </div>
-                `;
-            }
-            
-            chatScreen.classList.add('open');
-        }
-
-        function closeChat() {
-            document.getElementById('chatScreen').classList.remove('open');
-            removeImagePreview();
-        }
-
-        // Customization Functions
         function changeColor(color, button) {
             const appContainer = document.querySelector('.app-container');
             const chatScreen = document.getElementById('chatScreen');
+            const bodyElement = document.body;
             
-            appContainer.style.background = colorThemes[color];
-            chatScreen.style.background = colorThemes[color];
-            document.body.style.background = colorThemes[color];
+            if (colorThemes[color]) {
+                appContainer.style.background = colorThemes[color].background;
+                chatScreen.style.background = colorThemes[color].background;
+                bodyElement.style.background = colorThemes[color].body;
+                
+                console.log('Color changed to:', color);
+            } else {
+                console.error('Color theme not found:', color);
+            }
             
-            document.querySelectorAll('.color-option').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            document.querySelectorAll('.color-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (button) {
+                button.classList.add('active');
+            }
         }
 
         function changeBackground(input) {
@@ -1064,7 +1170,41 @@
             }
         }
 
-        // Image Preview Functions
+        function openChat(type) {
+            const chatScreen = document.getElementById('chatScreen');
+            const chatTitle = document.getElementById('chatTitle');
+            const chatMessages = document.getElementById('chatMessages');
+            
+            chatTitle.textContent = type === 'game' ? 'Ойунсана чат' : 'Миний чат';
+            
+            if (type === 'game') {
+                chatMessages.innerHTML = `
+                    <div class="message received">
+                        Тоглоом эхлүүлэх үү? 🎮
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzIyNDk1QSIvPgogIDx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSIjRjRFRkVCIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn46uPC90ZXh0Pgo8L3N2Zz4=" alt="Тоглоом">
+                    </div>
+                    <div class="message sent">Тийм ээ, эхлүүлье!</div>
+                    <div class="message received">Ямар тоглоом дуртай вэ?</div>
+                `;
+            } else {
+                chatMessages.innerHTML = `
+                    <div class="message received">Сайн байна уу!</div>
+                    <div class="message sent">Сайн байна, та яаж байна?</div>
+                    <div class="message received">
+                        Маш сайн байна! Зураг илгээж үзэх үү?
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzIyNDk1QSIvPgogIDx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjRjRFRkVCIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn4yHIFppcmFnPC90ZXh0Pgo8L3N2Zz4=" alt="Жишээ зураг">
+                    </div>
+                `;
+            }
+            
+            chatScreen.classList.add('open');
+        }
+
+        function closeChat() {
+            document.getElementById('chatScreen').classList.remove('open');
+            removeImagePreview();
+        }
+
         function previewImage(input) {
             const preview = document.getElementById('imagePreview');
             
@@ -1074,7 +1214,7 @@
                     selectedImage = e.target.result;
                     preview.innerHTML = `
                         <img src="${e.target.result}" class="image-preview" alt="Зураг">
-                        <button onclick="removeImagePreview()" style="margin-top: 10px; padding: 10px 20px; background: rgba(255,255,255,0.5); border: none; border-radius: 15px; color: white; cursor: pointer; font-size: 16px;">Арилгах ✕</button>
+                        <button onclick="removeImagePreview()" style="margin-top: 10px; padding: 8px 16px; background: rgba(244,239,235,0.5); border: none; border-radius: 12px; color: #22495A; cursor: pointer; font-size: 12px;">Арилгах ✕</button>
                     `;
                 };
                 reader.readAsDataURL(input.files[0]);
@@ -1087,7 +1227,6 @@
             document.getElementById('imageUpload').value = '';
         }
 
-        // Message Functions
         function sendMessage() {
             const input = document.getElementById('messageInput');
             const messagesDiv = document.getElementById('chatMessages');
@@ -1111,7 +1250,6 @@
                 removeImagePreview();
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 
-                // Auto reply with confirmation
                 setTimeout(() => {
                     const replyMessage = document.createElement('div');
                     replyMessage.className = 'message received';
@@ -1126,25 +1264,28 @@
             }
         }
 
-        // Enter key support
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('dblclick', function() {
+                    this.classList.remove('expanded');
+                });
+            });
 
-        // Close overlay when clicking outside
-        document.getElementById('overlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAll();
-            }
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            document.getElementById('overlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeAll();
+                }
+            });
         });
     </script>
 </body>
 </html>
-
-
-
 
 
 
